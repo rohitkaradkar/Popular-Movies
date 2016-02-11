@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    //define MyTmdbApiKey = "your api key" in gradle.properties
+    buildTypes.each {
+        it.buildConfigField 'String', 'TMDB_API_KEY', MyTmdbApiKey
+    }
 }
 
 dependencies {
