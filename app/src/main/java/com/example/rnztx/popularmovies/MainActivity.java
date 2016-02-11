@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
+import com.example.rnztx.popularmovies.modules.JsonHandler;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,5 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
         ImageView sampleImage = (ImageView)findViewById(R.id.image_sample);
         Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(sampleImage);
+
+        new JsonHandler().parseData();
     }
 }
