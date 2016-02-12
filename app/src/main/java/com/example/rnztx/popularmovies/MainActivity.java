@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView sampleImage = (ImageView)findViewById(R.id.image_sample);
         Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(sampleImage);
 
-        new FetchMovieData().execute();
+//        new FetchMovieData().execute();
 //        // only for debugging
 //        JsonHandler fetchMovies = new JsonHandler();
 //        ArrayList<ArrayList> movieInfo = fetchMovies.parseData();
