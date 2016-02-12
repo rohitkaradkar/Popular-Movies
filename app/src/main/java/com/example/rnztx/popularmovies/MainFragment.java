@@ -6,9 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.GridView;
 
-import com.squareup.picasso.Picasso;
+import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
+import com.example.rnztx.popularmovies.modules.JsonHandler;
 
 
 /**
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso;
  */
 public class MainFragment extends Fragment {
 
+    private AdapterMovieInfo mAdapterMovieInfo;
 
     public MainFragment() {
         // Required empty public constructor
@@ -28,8 +30,12 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        ImageView sampleImage = (ImageView)rootView.findViewById(R.id.image_sample);
-        Picasso.with(getActivity()).load("http://i.imgur.com/DvpvklR.png").into(sampleImage);
+
+
+        mAdapterMovieInfo = new AdapterMovieInfo(getActivity(),new JsonHandler().parseData());
+
+        GridView gridView = (GridView) rootView.findViewById(R.id.movie_gridView);
+        gridView.setAdapter(mAdapterMovieInfo);
 
         return rootView;
     }
