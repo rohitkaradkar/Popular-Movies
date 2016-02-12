@@ -31,15 +31,13 @@ public class MainActivity extends AppCompatActivity {
         Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(sampleImage);
 
 //        new FetchMovieData().execute();
+//
 //        // only for debugging
 //        JsonHandler fetchMovies = new JsonHandler();
-//        ArrayList<ArrayList> movieInfo = fetchMovies.parseData();
 //
-//        for (ArrayList item : movieInfo){
-//            Log.e(LOG_TAG,"----------");
-//            for (int i=0; i < item.size(); i++){
-//                Log.e(LOG_TAG,item.get(i).toString());
-//            }
+//        ArrayList<MovieInfo> movieInfos = fetchMovies.parseData();
+//        for (MovieInfo movie: movieInfos){
+//            Log.e(LOG_TAG,movie.toString());
 //        }
 
     }

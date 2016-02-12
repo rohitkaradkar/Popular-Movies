@@ -20,6 +20,9 @@ public class MovieInfo implements Parcelable {
         this.vote_avg = vote_avg;
         this.release_date = release_date;
     }
+    public String toString(){
+        return this.title + "----" + this.poster_path +"----"+ this.plot + "----" + this.vote_avg + "----" + this.release_date;
+    }
      private MovieInfo(Parcel parcel){
         title = parcel.readString();
         poster_path = parcel.readString();

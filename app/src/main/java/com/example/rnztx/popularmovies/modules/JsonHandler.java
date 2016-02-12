@@ -25,20 +25,21 @@ public class JsonHandler {
     }
 
     public ArrayList parseData(){
-        ArrayList<ArrayList> movieInfoArray = new ArrayList<>();
+        ArrayList<MovieInfo> movieInfoArray = new ArrayList<>();
         try {
             JSONObject TMDB_root = new JSONObject(this.rawJsonData);
             JSONArray resultsArray = TMDB_root.getJSONArray(TMDB_RESULTS);
             for(int i=0; i < resultsArray.length();i++){
-                // this arraylist Stores single movie information
-                ArrayList<String> information = new ArrayList<>();
 
                 JSONObject singleMovieInfo = resultsArray.getJSONObject(i);
-                information.add(singleMovieInfo.getString(ORIGINAL_TITLE));
-                information.add(singleMovieInfo.getString(POSTER_PATH));
-                information.add(singleMovieInfo.getString(PLOT));
-                information.add(singleMovieInfo.getString(VOTE_AVG));
-                information.add(singleMovieInfo.getString(RELEASE_DATE));
+
+                MovieInfo information = new MovieInfo(
+                     singleMovieInfo.getString(ORIGINAL_TITLE)
+                    ,singleMovieInfo.getString(POSTER_PATH)
+                    ,singleMovieInfo.getString(PLOT)
+                    ,singleMovieInfo.getString(VOTE_AVG)
+                    ,singleMovieInfo.getString(RELEASE_DATE)
+                );
 
                 movieInfoArray.add(information);
             }
