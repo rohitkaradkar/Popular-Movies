@@ -17,6 +17,7 @@ import java.util.List;
  * Created by rnztx on 12/2/16.
  */
 public class AdapterMovieInfo extends ArrayAdapter<MovieInfo> {
+    private static String LOG_TAG = AdapterMovieInfo.class.getSimpleName();
     public AdapterMovieInfo(Activity activity, List<MovieInfo> movieInfo){
         super(activity,0,movieInfo);
     }
@@ -24,16 +25,21 @@ public class AdapterMovieInfo extends ArrayAdapter<MovieInfo> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MovieInfo movieInfo = getItem(position);
-
+        String IMAGE_BASE = "http://image.tmdb.org/t/p/w185/";
+        String IMAGE_NAME = movieInfo.getPoster_path();
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(
                     R.layout.movie_item_grid, parent, false);
         }
 
         TextView txtMovieInfo = (TextView) convertView.findViewById(R.id.movie_text);
+        txtMovieInfo.setText(movieInfo.getTitle());
 
         ImageView sampleImage = (ImageView)convertView.findViewById(R.id.movie_image);
-        Picasso.with(getContext()).load("http://i.imgur.com/DvpvklR.png").into(sampleImage);
+        Picasso.with(getContext()).load(IMAGE_BASE+IMAGE_NAME).into(sampleImage);
+
+//        Log.e(LOG_TAG,movieInfo.getPoster_path());
+
         return convertView;
     }
 }

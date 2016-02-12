@@ -42,6 +42,26 @@ public class MovieInfo implements Parcelable {
         parcel.writeString(release_date);
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPoster_path() {
+        return poster_path;
+    }
+
+    public String getPlot() {
+        return plot;
+    }
+
+    public String getVote_avg() {
+        return vote_avg;
+    }
+
+    public String getRelease_date() {
+        return release_date;
+    }
+
     public final Parcelable.Creator<MovieInfo> CREATOR = new Parcelable.Creator<MovieInfo>(){
         @Override
         public MovieInfo createFromParcel(Parcel source) {
