@@ -5,10 +5,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.example.rnztx.popularmovies.modules.HttpHandler;
-import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
     final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -27,9 +25,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageView sampleImage = (ImageView)findViewById(R.id.image_sample);
-        Picasso.with(this).load("http://i.imgur.com/DvpvklR.png").into(sampleImage);
-
+        if(savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.mainActivity_container,new MainFragment())
+                    .commit();
+        }
 //        new FetchMovieData().execute();
 //
 //        // only for debugging
@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             String rawData = testFetchData();
             Log.e(LOG_TAG,rawData);
-
             return null;
         }
     }
