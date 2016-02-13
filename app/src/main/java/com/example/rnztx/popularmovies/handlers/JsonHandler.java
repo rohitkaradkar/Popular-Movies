@@ -1,7 +1,9 @@
-package com.example.rnztx.popularmovies.modules;
+package com.example.rnztx.popularmovies.handlers;
 
 
 import android.util.Log;
+
+import com.example.rnztx.popularmovies.modules.MovieInfo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

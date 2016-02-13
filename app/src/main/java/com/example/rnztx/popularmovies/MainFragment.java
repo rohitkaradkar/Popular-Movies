@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 
 import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
-import com.example.rnztx.popularmovies.modules.HttpHandler;
-import com.example.rnztx.popularmovies.modules.JsonHandler;
+import com.example.rnztx.popularmovies.handlers.HttpHandler;
+import com.example.rnztx.popularmovies.handlers.JsonHandler;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
 
 import java.util.ArrayList;

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.rnztx.popularmovies.modules.HttpHandler;
+import com.example.rnztx.popularmovies.handlers.HttpHandler;
 
 public class MainActivity extends AppCompatActivity {
     final String LOG_TAG = MainActivity.class.getSimpleName();

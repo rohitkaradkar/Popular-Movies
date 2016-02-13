@@ -1,4 +1,4 @@
-package com.example.rnztx.popularmovies.modules;
+package com.example.rnztx.popularmovies.handlers;
 
 import android.util.Log;
 
