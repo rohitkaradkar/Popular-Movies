@@ -37,6 +37,7 @@ public class MainFragment extends Fragment {
     final static String BASE_PATH_DISCOVER3 = "movie";
     final static String KEY_SORT = "sort_by";
     final static String KEY_API = "api_key";
+    // Intent Extra Object names
 
     public MainFragment() {
         // Required empty public constructor
@@ -65,7 +66,13 @@ public class MainFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                // get MovieInfo object for selected movie
+                MovieInfo selectedMovie = mAdapterMovieInfo.getItem(position);
+
+                // add Object to intent
+                String INTENT_EXTRA_KEY = getString(R.string.intentExtra_MovieInfo_Key);
+                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(INTENT_EXTRA_KEY,selectedMovie);
 
                 startActivity(intent);
             }

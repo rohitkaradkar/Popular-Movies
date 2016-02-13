@@ -62,7 +62,7 @@ public class MovieInfo implements Parcelable {
         return release_date;
     }
 
-    public final Parcelable.Creator<MovieInfo> CREATOR = new Parcelable.Creator<MovieInfo>(){
+    public static final Parcelable.Creator<MovieInfo> CREATOR = new Parcelable.Creator<MovieInfo>(){
         @Override
         public MovieInfo createFromParcel(Parcel source) {
              return new MovieInfo(source);
