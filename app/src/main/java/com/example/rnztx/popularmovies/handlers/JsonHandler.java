@@ -29,6 +29,7 @@ public class JsonHandler {
     public JsonHandler(String data){
         this.rawJsonData = data;
     }
+
     public ArrayList parseData(){
         ArrayList<MovieInfo> movieInfoArray = new ArrayList<>();
         try {
@@ -47,7 +48,7 @@ public class JsonHandler {
                 );
 
                 movieInfoArray.add(information);
-                Log.e(LOG_TAG,information.toString());
+//                Log.e(LOG_TAG,information.toString());
             }
         }catch (Exception e){
             Log.e(LOG_TAG,e.toString());

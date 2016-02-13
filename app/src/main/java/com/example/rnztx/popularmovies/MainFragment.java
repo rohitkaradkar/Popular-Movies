@@ -1,6 +1,7 @@
 package com.example.rnztx.popularmovies;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,12 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
 import com.example.rnztx.popularmovies.handlers.HttpHandler;
 import com.example.rnztx.popularmovies.handlers.JsonHandler;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
+import com.example.rnztx.popularmovies.movieDetails.DetailActivity;
 
 import java.util.ArrayList;
 
@@ -51,10 +54,22 @@ public class MainFragment extends Fragment {
         ArrayList<MovieInfo> dummyData = new JsonHandler().parseData();
         mAdapterMovieInfo = new AdapterMovieInfo(getActivity(),dummyData);
 
+        // GridView To display on Main Activity
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_gridView);
         gridView.setAdapter(mAdapterMovieInfo);
 
+        //Fetch Data & update adapter
         new MovieTask().execute();
+
+        // attaching click listener
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+
+                startActivity(intent);
+            }
+        });
 
         return rootView;
     }
@@ -78,6 +93,7 @@ public class MainFragment extends Fragment {
         return movieDbHandler.fetchData();
     }
 
+    // handles background execution
     private class MovieTask extends AsyncTask<Void,Void,String>{
 
         @Override
