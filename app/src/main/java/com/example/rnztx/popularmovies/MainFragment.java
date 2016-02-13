@@ -37,8 +37,8 @@ public class MainFragment extends Fragment {
     final static String BASE_PATH_DISCOVER3 = "movie";
     final static String KEY_SORT = "sort_by";
     final static String KEY_API = "api_key";
-    // Intent Extra Object names
-
+    // Instance Extras
+    final static String STATE_ADAPTER = "adapter";
     public MainFragment() {
         // Required empty public constructor
     }
@@ -114,7 +114,7 @@ public class MainFragment extends Fragment {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             if (s != null){
-                // clearn previous data
+                // clear previous data
                 mAdapterMovieInfo.clear();
 
                 JsonHandler jsonHandler = new JsonHandler(s);
@@ -122,7 +122,7 @@ public class MainFragment extends Fragment {
 
                 mAdapterMovieInfo.addAll(movieInfoArrayList);
 
-                Log.e(LOG_TAG,"All Done"+s.length());
+                Log.e(LOG_TAG,"DONE: Fetch Movie Data");
             }
         }
     }
