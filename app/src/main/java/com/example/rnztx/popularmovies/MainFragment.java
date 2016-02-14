@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,11 +39,41 @@ public class MainFragment extends Fragment {
     final static String KEY_SORT = "sort_by";
     final static String KEY_API = "api_key";
     // Instance Extras
-    final static String STATE_ADAPTER = "adapter";
+    final static String STATE_ADAPTER_CONTENT = "adapter";
     public MainFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // No parameter constructor returns dummy data
+        ArrayList<MovieInfo> dummyData = new JsonHandler().parseData();
+        mAdapterMovieInfo = new AdapterMovieInfo(getActivity(),dummyData);
+
+        if(savedInstanceState == null){
+             //Fetch Data & update adapter
+             new MovieTask().execute();
+        }
+        else {
+             mAdapterMovieInfo.clear();
+             ArrayList<MovieInfo> arrayList = savedInstanceState.getParcelableArrayList(STATE_ADAPTER_CONTENT);
+             mAdapterMovieInfo.addAll(arrayList);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //Save user Data
+        ArrayList<MovieInfo> arrayList = new ArrayList<>();
+        for(int i=0;i < mAdapterMovieInfo.getCount(); i++){
+            arrayList.add(mAdapterMovieInfo.getItem(i));
+        }
+        outState.putParcelableArrayList(STATE_ADAPTER_CONTENT,arrayList);
+//        Log.e(LOG_TAG,"Saving Instance State");
+
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,17 +81,11 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-        // No parameter constructor returns dummy data
-        ArrayList<MovieInfo> dummyData = new JsonHandler().parseData();
-        mAdapterMovieInfo = new AdapterMovieInfo(getActivity(),dummyData);
-
         // GridView To display on Main Activity
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_gridView);
         gridView.setAdapter(mAdapterMovieInfo);
 
-        //Fetch Data & update adapter
-        new MovieTask().execute();
+
 
         // attaching click listener
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
