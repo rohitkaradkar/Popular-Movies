@@ -23,6 +23,7 @@ public class JsonHandler {
     private final String RELEASE_DATE = "release_date";
 
     public JsonHandler(){
+        // this is dummy Data of single movie
         this.rawJsonData = "{\"page\":1,\"results\":[{\"poster_path\":\"\\/inVq3FRqcYIRl2la8iZikYYxFNR.jpg\",\"adult\":false,\"overview\":\"Based upon Marvel Comics’ most unconventional anti-hero, DEADPOOL tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.\",\"release_date\":\"2016-02-09\",\"genre_ids\":[35,12,28,878],\"id\":293660,\"original_title\":\"Deadpool\",\"original_language\":\"en\",\"title\":\"Deadpool\",\"backdrop_path\":\"\\/nbIrDhOtUpdD9HKDBRy02a8VhpV.jpg\",\"popularity\":57.267788,\"vote_count\":274,\"video\":false,\"vote_average\":6.16}],\"total_results\":255141,\"total_pages\":12758}";
     }
 

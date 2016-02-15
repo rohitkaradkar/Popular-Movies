@@ -6,17 +6,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.rnztx.popularmovies.R;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment {
 
-
+    final static String IMAGE_BASE = "http://image.tmdb.org/t/p/w185/";
     public DetailFragment() {
         // Required empty public constructor
     }
@@ -34,8 +36,25 @@ public class DetailFragment extends Fragment {
         MovieInfo movieInfo = (MovieInfo)intentBundle.getParcelable(INTENT_EXTRA_KEY);
 
         // set title
-        TextView textView = (TextView)rootView.findViewById(R.id.txt_hello);
-        textView.setText(movieInfo.getTitle());
+        TextView txtMovieTitle= (TextView)rootView.findViewById(R.id.txt_movie_title);
+        txtMovieTitle.setText(movieInfo.getTitle());
+
+        // set Poster Image
+        ImageView imgMoviePoster = (ImageView)rootView.findViewById(R.id.img_detailActivity_poster);
+        String imgUrl = IMAGE_BASE+movieInfo.getPoster_path();
+        Picasso.with(getContext()).load(imgUrl).into(imgMoviePoster);
+
+        // set movie Summary
+        TextView txtMovieSummary= (TextView)rootView.findViewById(R.id.txt_movie_summary);
+        txtMovieSummary.setText(movieInfo.getPlot());
+
+        // set Release Date
+        TextView txtMovieReleaseDate= (TextView)rootView.findViewById(R.id.txt_movie_releaseDate);
+        txtMovieReleaseDate.setText(movieInfo.getRelease_date());
+
+        // set avg rating
+        TextView txtMovieRatings= (TextView)rootView.findViewById(R.id.txt_movie_rating);
+        txtMovieRatings.setText(movieInfo.getVote_avg());
 
         return rootView;
     }
