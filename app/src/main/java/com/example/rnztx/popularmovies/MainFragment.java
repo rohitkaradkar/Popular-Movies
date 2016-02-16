@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
 import com.example.rnztx.popularmovies.handlers.HttpHandler;
@@ -45,6 +47,8 @@ public class MainFragment extends Fragment {
     //Movie Sort Keys
     final static String SORTBY_POP = "popularity.desc";
     final static String SORTBY_RATING = "vote_count.desc";// vote_average / vote_count
+
+    private static String current_sort ;
     public MainFragment() {
         // Required empty public constructor
     }
@@ -70,10 +74,27 @@ public class MainFragment extends Fragment {
         }
     }
 
+    // Add items to menu
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menu = item.getItemId();
+
+        if(menu == R.id.menu_view_pop && current_sort.equals(SORTBY_POP) ){
+            new MovieTask().execute(SORTBY_POP);
+            Toast.makeText(getActivity(),"Updating View",Toast.LENGTH_SHORT).show();
+        }
+        else if(menu == R.id.menu_view_rated && !current_sort.equals(SORTBY_RATING)){
+            new MovieTask().execute(SORTBY_RATING);
+            Toast.makeText(getActivity(),"Updating View",Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -84,7 +105,6 @@ public class MainFragment extends Fragment {
             arrayList.add(mAdapterMovieInfo.getItem(i));
         }
         outState.putParcelableArrayList(STATE_ADAPTER_CONTENT,arrayList);
-//        Log.e(LOG_TAG,"Saving Instance State");
 
         super.onSaveInstanceState(outState);
     }
@@ -98,8 +118,6 @@ public class MainFragment extends Fragment {
         // GridView To display on Main Activity
         GridView gridView = (GridView) rootView.findViewById(R.id.movie_gridView);
         gridView.setAdapter(mAdapterMovieInfo);
-
-
 
         // attaching click listener
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -118,24 +136,6 @@ public class MainFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    private String fetchJsonData(){
-        final String VAL_SORT ="popularity.desc";
-        final String VAL_API_KEY = BuildConfig.TMDB_API_KEY;
-
-        Uri.Builder movieUriBuilder = new Uri.Builder();
-        movieUriBuilder.scheme(URL_SCHEME)
-                .authority(BASE_URL_API)
-                .appendPath(BASE_PATH_DISCOVER1)
-                .appendPath(BASE_PATH_DISCOVER2)
-                .appendPath(BASE_PATH_DISCOVER3)
-                .appendQueryParameter(KEY_SORT,VAL_SORT)
-                .appendQueryParameter(KEY_API,VAL_API_KEY);
-
-        HttpHandler movieDbHandler = new HttpHandler(movieUriBuilder.build().toString());
-
-        return movieDbHandler.fetchData();
     }
 
     // handles background execution
@@ -158,7 +158,7 @@ public class MainFragment extends Fragment {
             HttpHandler movieDbHandler = new HttpHandler(movieUriBuilder.build().toString());
 
             String jsonData = movieDbHandler.fetchData();
-
+            current_sort = VAL_SORT;
             return jsonData;
         }
 
