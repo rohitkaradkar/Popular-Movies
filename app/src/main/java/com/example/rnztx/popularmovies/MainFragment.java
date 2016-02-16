@@ -85,7 +85,7 @@ public class MainFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int menu = item.getItemId();
 
-        if(menu == R.id.menu_view_pop && current_sort.equals(SORTBY_POP) ){
+        if(menu == R.id.menu_view_pop && !current_sort.equals(SORTBY_POP) ){
             new MovieTask().execute(SORTBY_POP);
             Toast.makeText(getActivity(),"Updating View",Toast.LENGTH_SHORT).show();
         }

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.rnztx.popularmovies.R;
 import com.squareup.picasso.Picasso;
@@ -32,13 +31,8 @@ public class AdapterMovieInfo extends ArrayAdapter<MovieInfo> {
                     R.layout.movie_item_grid, parent, false);
         }
 
-        TextView txtMovieInfo = (TextView) convertView.findViewById(R.id.movie_text);
-        txtMovieInfo.setText(movieInfo.getTitle());
-
-        ImageView sampleImage = (ImageView)convertView.findViewById(R.id.movie_image);
-        Picasso.with(getContext()).load(IMAGE_BASE+IMAGE_NAME).into(sampleImage);
-
-//        Log.e(LOG_TAG,movieInfo.getPoster_path());
+        ImageView moviePosterImage = (ImageView)convertView.findViewById(R.id.gridView_moviePoster);
+        Picasso.with(getContext()).load(IMAGE_BASE+IMAGE_NAME).into(moviePosterImage);
 
         return convertView;
     }
