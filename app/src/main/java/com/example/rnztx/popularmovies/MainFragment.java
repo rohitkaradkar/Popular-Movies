@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -40,6 +42,9 @@ public class MainFragment extends Fragment {
     final static String KEY_API = "api_key";
     // Instance Extras
     final static String STATE_ADAPTER_CONTENT = "adapter";
+    //Movie Sort Keys
+    final static String SORTBY_POP = "popularity.desc";
+    final static String SORTBY_RATING = "vote_count.desc";// vote_average / vote_count
     public MainFragment() {
         // Required empty public constructor
     }
@@ -47,19 +52,28 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //declare that fragment have menu options
+        setHasOptionsMenu(true);
+
         // No parameter constructor returns dummy data
         ArrayList<MovieInfo> dummyData = new JsonHandler().parseData();
         mAdapterMovieInfo = new AdapterMovieInfo(getActivity(),dummyData);
 
         if(savedInstanceState == null){
              //Fetch Data & update adapter
-             new MovieTask().execute();
+             new MovieTask().execute(SORTBY_RATING);
         }
         else {
              mAdapterMovieInfo.clear();
              ArrayList<MovieInfo> arrayList = savedInstanceState.getParcelableArrayList(STATE_ADAPTER_CONTENT);
              mAdapterMovieInfo.addAll(arrayList);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu,menu);
     }
 
     @Override
@@ -119,19 +133,32 @@ public class MainFragment extends Fragment {
                 .appendQueryParameter(KEY_SORT,VAL_SORT)
                 .appendQueryParameter(KEY_API,VAL_API_KEY);
 
-//        Log.e(LOG_TAG,movieUriBuilder.toString());
         HttpHandler movieDbHandler = new HttpHandler(movieUriBuilder.build().toString());
-//        Log.e(LOG_TAG,movieDbHandler.fetchData());
+
         return movieDbHandler.fetchData();
     }
 
     // handles background execution
-    private class MovieTask extends AsyncTask<Void,Void,String>{
+    private class MovieTask extends AsyncTask<String,Void,String>{
 
         @Override
-        protected String doInBackground(Void... params) {
-            String jsonData = fetchJsonData();
-//            Log.e(LOG_TAG,""jsonData);
+        protected String doInBackground(String... params) {
+            final String VAL_SORT =params[0];
+            final String VAL_API_KEY = BuildConfig.TMDB_API_KEY;
+
+            Uri.Builder movieUriBuilder = new Uri.Builder();
+            movieUriBuilder.scheme(URL_SCHEME)
+                    .authority(BASE_URL_API)
+                    .appendPath(BASE_PATH_DISCOVER1)
+                    .appendPath(BASE_PATH_DISCOVER2)
+                    .appendPath(BASE_PATH_DISCOVER3)
+                    .appendQueryParameter(KEY_SORT,VAL_SORT)
+                    .appendQueryParameter(KEY_API,VAL_API_KEY);
+
+            HttpHandler movieDbHandler = new HttpHandler(movieUriBuilder.build().toString());
+
+            String jsonData = movieDbHandler.fetchData();
+
             return jsonData;
         }
 
@@ -147,7 +174,7 @@ public class MainFragment extends Fragment {
 
                 mAdapterMovieInfo.addAll(movieInfoArrayList);
 
-                Log.e(LOG_TAG,"DONE: Fetch Movie Data");
+                Log.e(LOG_TAG,"DONE: Fetching Movie Data");
             }
         }
     }

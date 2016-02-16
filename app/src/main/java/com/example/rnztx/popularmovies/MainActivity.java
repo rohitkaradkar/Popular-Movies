@@ -2,7 +2,6 @@ package com.example.rnztx.popularmovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 
 public class MainActivity extends AppCompatActivity {
     final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -22,9 +21,9 @@ public class MainActivity extends AppCompatActivity {
     // create Settings menu
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu,menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
 }
