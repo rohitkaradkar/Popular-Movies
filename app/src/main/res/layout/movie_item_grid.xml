@@ -7,5 +7,4 @@
         android:scaleType="fitXY"
         android:id="@+id/gridView_moviePoster"
         android:adjustViewBounds="true"/>
-
 </FrameLayout>
