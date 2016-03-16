@@ -1,11 +1,11 @@
 package com.example.rnztx.popularmovies.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
-import android.util.Log;
 
-import com.example.rnztx.popularmovies.data.MovieContract.*;
+import com.example.rnztx.popularmovies.data.MovieContract.FavouriteMovieEntry;
 
 import java.util.HashSet;
 
@@ -64,7 +64,7 @@ public class TestDatabase extends AndroidTestCase {
         int columnIndex = cursor.getColumnIndex("name");
         do {
             String columnName = cursor.getString(columnIndex);
-            Log.e(LOG_TAG,cursor.getString(columnIndex+1));
+//            Log.e(LOG_TAG,cursor.getString(columnIndex+1));
             myColumnNameSet.remove(columnName);
         }while (cursor.moveToNext());
 
@@ -72,4 +72,25 @@ public class TestDatabase extends AndroidTestCase {
         cursor.close();
         db.close();
     }
+
+    public void testInsertDb(){
+        SQLiteDatabase db = new MovieDbHelper(this.mContext).getWritableDatabase();
+        // get dummy data
+        ContentValues values = TestUtils.getDummyMovieValue();
+
+        // insert data & get row id
+        long rowId = db.insert(FavouriteMovieEntry.TABLE_NAME,null,values);
+//        Log.e(LOG_TAG,"row id: "+rowId);
+        assertTrue("ERRRR: unable to insert data",rowId!=-1);
+
+        // Query database in Cursor
+        Cursor cursor = db.query(FavouriteMovieEntry.TABLE_NAME,null,null,null,null,null,null);
+
+        // verify that we got valid database row
+        assertTrue("ERRR: no records found",cursor.moveToFirst());
+
+        // check cursor values with our content values
+        TestUtils.validateCurrentRecord("ERRR: invalid data inserted",cursor,values);
+    }
+
 }
