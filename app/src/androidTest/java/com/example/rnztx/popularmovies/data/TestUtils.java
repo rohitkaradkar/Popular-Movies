@@ -15,12 +15,12 @@ import java.util.Set;
 public class TestUtils extends AndroidTestCase {
     public static ContentValues getDummyMovieValue(){
         ContentValues values = new ContentValues();
-        values.put(FavouriteMovieEntry._ID,1111);
-        values.put(FavouriteMovieEntry.COLUMN_TITLE,"Rohit Karadkar");
-        values.put(FavouriteMovieEntry.COLUMN_RELEASE_DATE,"20-12-1992");
-        values.put(FavouriteMovieEntry.COLUMN_POSTER_PATH,"path/to/poster.img");
-        values.put(FavouriteMovieEntry.COLUMN_VOTE_AVERAGE,8.5);
-        values.put(FavouriteMovieEntry.COLUMN_OVERVIEW,"THis is supercool Movie");
+        values.put(MovieEntry._ID,1111);
+        values.put(MovieEntry.COLUMN_TITLE,"Rohit Karadkar");
+        values.put(MovieEntry.COLUMN_RELEASE_DATE,"20-12-1992");
+        values.put(MovieEntry.COLUMN_POSTER_PATH,"path/to/poster.img");
+        values.put(MovieEntry.COLUMN_VOTE_AVERAGE,8.5);
+        values.put(MovieEntry.COLUMN_OVERVIEW,"THis is supercool Movie");
         return values;
     }
     // this code snippet is taken from Udacity's Sunshine code repository

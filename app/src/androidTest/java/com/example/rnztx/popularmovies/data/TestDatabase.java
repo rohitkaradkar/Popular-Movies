@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
-import com.example.rnztx.popularmovies.data.MovieContract.FavouriteMovieEntry;
+import com.example.rnztx.popularmovies.data.MovieContract.MovieEntry;
 
 import java.util.HashSet;
 
@@ -27,7 +27,7 @@ public class TestDatabase extends AndroidTestCase {
     public void testCreateDb(){
         // make Set of our tables
         HashSet<String> myTableSet = new HashSet<>();
-        myTableSet.add(FavouriteMovieEntry.TABLE_NAME);
+        myTableSet.add(MovieEntry.TABLE_NAME);
 
         // get Writable database
         SQLiteDatabase db = new MovieDbHelper(this.mContext).getWritableDatabase();
@@ -47,18 +47,18 @@ public class TestDatabase extends AndroidTestCase {
         assertTrue("Error: table name doesn't exists",myTableSet.isEmpty());
 
         // get table structure
-        cursor = db.rawQuery("PRAGMA table_info("+ FavouriteMovieEntry.TABLE_NAME+")",null);
+        cursor = db.rawQuery("PRAGMA table_info("+ MovieEntry.TABLE_NAME+")",null);
         //query database tablename
         assertTrue("ERROR: error getting table info",cursor.moveToFirst());
 
         // build set columnames to verify
         HashSet<String> myColumnNameSet = new HashSet<>();
-        myColumnNameSet.add(FavouriteMovieEntry._ID);
-        myColumnNameSet.add(FavouriteMovieEntry.COLUMN_TITLE);
-        myColumnNameSet.add(FavouriteMovieEntry.COLUMN_RELEASE_DATE);
-        myColumnNameSet.add(FavouriteMovieEntry.COLUMN_POSTER_PATH);
-        myColumnNameSet.add(FavouriteMovieEntry.COLUMN_VOTE_AVERAGE);
-        myColumnNameSet.add(FavouriteMovieEntry.COLUMN_OVERVIEW);
+        myColumnNameSet.add(MovieEntry._ID);
+        myColumnNameSet.add(MovieEntry.COLUMN_TITLE);
+        myColumnNameSet.add(MovieEntry.COLUMN_RELEASE_DATE);
+        myColumnNameSet.add(MovieEntry.COLUMN_POSTER_PATH);
+        myColumnNameSet.add(MovieEntry.COLUMN_VOTE_AVERAGE);
+        myColumnNameSet.add(MovieEntry.COLUMN_OVERVIEW);
 
         // now verify all reqired Column's are present
         int columnIndex = cursor.getColumnIndex("name");
@@ -79,12 +79,12 @@ public class TestDatabase extends AndroidTestCase {
         ContentValues values = TestUtils.getDummyMovieValue();
 
         // insert data & get row id
-        long rowId = db.insert(FavouriteMovieEntry.TABLE_NAME,null,values);
+        long rowId = db.insert(MovieEntry.TABLE_NAME,null,values);
 //        Log.e(LOG_TAG,"row id: "+rowId);
         assertTrue("ERRRR: unable to insert data",rowId!=-1);
 
         // Query database in Cursor
-        Cursor cursor = db.query(FavouriteMovieEntry.TABLE_NAME,null,null,null,null,null,null);
+        Cursor cursor = db.query(MovieEntry.TABLE_NAME,null,null,null,null,null,null);
 
         // verify that we got valid database row
         assertTrue("ERRR: no records found",cursor.moveToFirst());

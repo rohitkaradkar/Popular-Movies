@@ -52,16 +52,17 @@ public class MovieProvider extends ContentProvider {
         // code passed to constructor represents code returned for Root.
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         String authority = MovieContract.CONTENT_AUTHORITY;
-        // any char String /*
+        // any char sequence /*
         // any digit /#
         /**
-         * for all favourite movies content://authority/movies
+         * for all favourite movies content://authority/movie/all
          * single  movie content://authority/movie/id /#
+         * Optional,
          * single movie review content://authority/id/review /#/review
          */
-        uriMatcher.addURI(authority,MovieContract.PATH_MOVIES, Constants.UriMatchCodes.MOVIES);
+        uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/"+MovieContract.PATH_ALL_MOVIES, Constants.UriMatchCodes.MOVIES);
         uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/#", Constants.UriMatchCodes.MOVIE_WITH_ID);
-        uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/#"+MovieContract.PATH_REVIEW, Constants.UriMatchCodes.MOVIE_REVIEW);
+        uriMatcher.addURI(authority,MovieContract.PATH_MOVIE+"/#/"+MovieContract.PATH_REVIEW, Constants.UriMatchCodes.MOVIE_REVIEW);
         return uriMatcher;
     }
 

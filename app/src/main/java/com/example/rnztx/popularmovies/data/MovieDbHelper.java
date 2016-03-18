@@ -17,13 +17,13 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // database is created if it is not present
-        final String SQL_CREATE_FAVOURITE_MOVIE_TABLE = "CREATE TABLE "+ FavouriteMovieEntry.TABLE_NAME+" ("+
-                FavouriteMovieEntry._ID + " INTEGER PRIMARY KEY, "+
-                FavouriteMovieEntry.COLUMN_TITLE + " TEXT NOT NULL, "+
-                FavouriteMovieEntry.COLUMN_RELEASE_DATE+" TEXT NOT NULL, "+
-                FavouriteMovieEntry.COLUMN_POSTER_PATH+" TEXT NOT NULL, "+
-                FavouriteMovieEntry.COLUMN_VOTE_AVERAGE+" REAL NOT NULL, "+
-                FavouriteMovieEntry.COLUMN_OVERVIEW+" TEXT NOT NULL);";
+        final String SQL_CREATE_FAVOURITE_MOVIE_TABLE = "CREATE TABLE "+ MovieEntry.TABLE_NAME+" ("+
+                MovieEntry._ID + " INTEGER PRIMARY KEY, "+
+                MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, "+
+                MovieEntry.COLUMN_RELEASE_DATE+" TEXT NOT NULL, "+
+                MovieEntry.COLUMN_POSTER_PATH+" TEXT NOT NULL, "+
+                MovieEntry.COLUMN_VOTE_AVERAGE+" REAL NOT NULL, "+
+                MovieEntry.COLUMN_OVERVIEW+" TEXT NOT NULL);";
 
         db.execSQL(SQL_CREATE_FAVOURITE_MOVIE_TABLE);
     }
