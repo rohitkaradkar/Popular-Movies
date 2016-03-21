@@ -23,6 +23,15 @@ public class TestProvider extends AndroidTestCase {
     }
 
     /**
+     * For fresh start... Delete All records from database
+     */
+    public void deleteAllRecordsOfDB(){
+        SQLiteDatabase db = new MovieDbHelper(mContext).getWritableDatabase();
+        db.delete(MovieContract.MovieEntry.TABLE_NAME,null,null);
+        db.close();
+    }
+
+    /**
      * to make sure ContentProvider is registered Properly
      */
     public void testIsProvidersRegistered(){
@@ -67,23 +76,26 @@ public class TestProvider extends AndroidTestCase {
         assertEquals("ERROR: invalid single movie review type",singleMovieReviewType, MovieContract.MovieEntry.CONTENT_ITEM_TYPE);
 //        Log.e(LOG_TAG,singleMovieReviewType);
     }
-
     /**
      * test insert & update operations
      */
     public void testInsertUpdateMovie(){
-        ContentValues dummyValues = TestUtils.getDummyMovieValue();
+        long movId = 1992;
+
+        ContentValues dummyValues = TestUtils.getDummyMovieValue(movId);
         Uri movieUri = mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,dummyValues);
         long rowId = ContentUris.parseId(movieUri);
         assertTrue("ERROR: failed to insert",rowId!=-1);
-    }
-    /**
-     * For fresh start... Delete All records from database
-     */
-    public void deleteAllRecordsOfDB(){
-        SQLiteDatabase db = new MovieDbHelper(mContext).getWritableDatabase();
-        db.delete(MovieContract.MovieEntry.TABLE_NAME,null,null);
-        db.close();
+
+        ContentValues updatedValues = new ContentValues(dummyValues);
+        updatedValues.put(MovieContract.MovieEntry._ID,movId);
+        updatedValues.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH,"new/path/poster.png");
+
+        int rowsUpdated = mContext.getContentResolver().update(MovieContract.MovieEntry.CONTENT_URI,
+                                                                updatedValues,
+                                                                MovieContract.MovieEntry._ID+"= ?",
+                                                                new String[]{Long.toString(movId)});
+        assertEquals("ERROR: failed to update ",1,rowsUpdated);
     }
 
 }

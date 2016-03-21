@@ -76,7 +76,7 @@ public class TestDatabase extends AndroidTestCase {
     public void testInsertDb(){
         SQLiteDatabase db = new MovieDbHelper(this.mContext).getWritableDatabase();
         // get dummy data
-        ContentValues values = TestUtils.getDummyMovieValue();
+        ContentValues values = TestUtils.getDummyMovieValue(125);
 
         // insert data & get row id
         long rowId = db.insert(MovieEntry.TABLE_NAME,null,values);

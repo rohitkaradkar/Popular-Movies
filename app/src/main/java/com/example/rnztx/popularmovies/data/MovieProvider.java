@@ -81,7 +81,20 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = mUriMatcher.match(uri);
+        int rowsUpdate= 0;
+        switch (match){
+            case Constants.UriMatchCodes.MOVIE:{
+                rowsUpdate = db.update(MovieContract.MovieEntry.TABLE_NAME,values,selection,selectionArgs);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unknow uri got: "+match+" for"+uri);
+        }
+        if(rowsUpdate>0)
+            notifyChangeToProvider(uri);
+        return rowsUpdate;
     }
 
     @Nullable
@@ -103,11 +116,7 @@ public class MovieProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknow uri got: "+match+" for"+uri);
         }
-        try {
-            getContext().getContentResolver().notifyChange(uri,null);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        notifyChangeToProvider(uri);
         return returnUri;
     }
 
@@ -120,5 +129,11 @@ public class MovieProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return null;
     }
-
+    private void notifyChangeToProvider(Uri uri){
+        try {
+            getContext().getContentResolver().notifyChange(uri,null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
