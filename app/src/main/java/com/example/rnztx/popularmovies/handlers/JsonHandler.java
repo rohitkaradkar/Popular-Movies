@@ -21,6 +21,7 @@ public class JsonHandler {
     private final String PLOT = "overview";
     private final String VOTE_AVG = "vote_average";
     private final String RELEASE_DATE = "release_date";
+    private final String MOVIE_ID = "id";
 
     public JsonHandler(){
         // this is dummy Data of single movie
@@ -46,6 +47,7 @@ public class JsonHandler {
                     ,singleMovieInfo.getString(PLOT)
                     ,singleMovieInfo.getString(VOTE_AVG)
                     ,singleMovieInfo.getString(RELEASE_DATE)
+                    ,Long.toString(singleMovieInfo.getLong(MOVIE_ID))
                 );
 
                 movieInfoArray.add(information);

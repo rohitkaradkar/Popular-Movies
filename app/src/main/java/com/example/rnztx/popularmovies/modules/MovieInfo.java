@@ -12,13 +12,15 @@ public class MovieInfo implements Parcelable {
     private String plot;
     private String vote_avg;
     private String release_date;
+    private String movie_id;
 
-    public MovieInfo(String title, String poster_path, String plot, String vote_avg, String release_date) {
+    public MovieInfo(String title, String poster_path, String plot, String vote_avg, String release_date, String movie_id) {
         this.title = title;
         this.poster_path = poster_path;
         this.plot = plot;
         this.vote_avg = vote_avg;
         this.release_date = release_date;
+        this.movie_id = movie_id;
     }
     public String toString(){
         return this.title + "----" + this.poster_path +"----"+ this.plot + "----" + this.vote_avg + "----" + this.release_date;
@@ -29,17 +31,25 @@ public class MovieInfo implements Parcelable {
         plot = parcel.readString();
         vote_avg = parcel.readString();
         release_date = parcel.readString();
+         movie_id = parcel.readString();
     }
     @Override
     public int describeContents() {
         return 0;
     }
+
     public void writeToParcel(Parcel parcel, int i){
         parcel.writeString(title);
         parcel.writeString(poster_path);
         parcel.writeString(plot);
         parcel.writeString(vote_avg);
         parcel.writeString(release_date);
+        parcel.writeString(movie_id);
+
+    }
+
+    public String getMovie_id() {
+        return movie_id;
     }
 
     public String getTitle() {

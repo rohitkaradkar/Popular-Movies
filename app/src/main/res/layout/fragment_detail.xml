@@ -62,6 +62,14 @@
                     android:drawableStart="@drawable/ic_action_star_10"
                     android:drawableLeft="@drawable/ic_action_star_10"
                     android:textSize="@dimen/movDetail_txtSize_other"/>
+            <!--Favourite button-->
+                <ImageButton
+                    android:id="@+id/btnFavourite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_favorite_holo"
+                    />
+
             </LinearLayout>
 
         </LinearLayout>
