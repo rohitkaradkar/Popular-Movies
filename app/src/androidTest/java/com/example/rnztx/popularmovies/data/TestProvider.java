@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
@@ -77,7 +78,7 @@ public class TestProvider extends AndroidTestCase {
 //        Log.e(LOG_TAG,singleMovieReviewType);
     }
     /**
-     * test insert & update operations
+     * test insert & update & query operations
      */
     public void testInsertUpdateMovie(){
         long movId = 1992;
@@ -96,6 +97,17 @@ public class TestProvider extends AndroidTestCase {
                                                                 MovieContract.MovieEntry._ID+"= ?",
                                                                 new String[]{Long.toString(movId)});
         assertEquals("ERROR: failed to update ",1,rowsUpdated);
+
+        Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.buildMovieWithIdUri(movId),
+                null,
+                MovieContract.MovieEntry._ID + " = "+movId,null,null);
+
+        cursor.moveToFirst();
+        String colName[] = cursor.getColumnNames();
+        for (int i=0;i<colName.length;i++){
+            Log.e("ROW ",colName[i]+": "+cursor.getString(i));
+        }
+        cursor.close();
     }
 
 }

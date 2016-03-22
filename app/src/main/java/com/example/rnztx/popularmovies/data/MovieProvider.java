@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.example.rnztx.popularmovies.modules.Constants;
 
@@ -16,6 +17,7 @@ import com.example.rnztx.popularmovies.modules.Constants;
 public class MovieProvider extends ContentProvider {
     private static final UriMatcher mUriMatcher = buildUriMatcher();
     private MovieDbHelper mOpenHelper;
+    private static final String LOG_TAG = MovieProvider.class.getSimpleName();
     @Override
     public boolean onCreate() {
         // creates database instance
@@ -127,8 +129,23 @@ public class MovieProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        Cursor cursor = null;
+        SQLiteDatabase db =null;
+        try {
+            db = mOpenHelper.getReadableDatabase();
+
+            switch (mUriMatcher.match(uri)){
+                // "movie/#"
+                case Constants.UriMatchCodes.MOVIE_WITH_ID:{
+                    cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                }
+            }
+        }catch (Exception e){
+            Log.e(LOG_TAG,e.toString());
+        }
+        return cursor;
     }
+
     private void notifyChangeToProvider(Uri uri){
         try {
             getContext().getContentResolver().notifyChange(uri,null);

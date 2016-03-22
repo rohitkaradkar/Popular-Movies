@@ -88,9 +88,7 @@ public class TestDatabase extends AndroidTestCase {
 
         // verify that we got valid database row
         assertTrue("ERRR: no records found",cursor.moveToFirst());
-
-        // check cursor values with our content values
-        TestUtils.validateCurrentRecord("ERRR: invalid data inserted",cursor,values);
+        
     }
 
 }
