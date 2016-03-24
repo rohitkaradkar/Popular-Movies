@@ -124,6 +124,22 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+        // we are only going to delete movie with ID
+        if(mUriMatcher.match(uri)==Constants.UriMatchCodes.MOVIE_WITH_ID){
+            SQLiteDatabase db = null;
+            Cursor cursor = null;
+            int rowsDeleted = 0;
+            try {
+                db = mOpenHelper.getWritableDatabase();
+                rowsDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
+                return rowsDeleted;
+            }catch (Exception e){
+                Log.e(LOG_TAG,e.toString());
+            }
+        }
+        else {
+                throw new UnsupportedOperationException("Unknown uri "+uri);
+        }
         return 0;
     }
     @Nullable
@@ -138,7 +154,10 @@ public class MovieProvider extends ContentProvider {
                 // "movie/#"
                 case Constants.UriMatchCodes.MOVIE_WITH_ID:{
                     cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
+                    break;
                 }
+                default:
+                    throw new UnsupportedOperationException("Unknown uri "+uri);
             }
         }catch (Exception e){
             Log.e(LOG_TAG,e.toString());

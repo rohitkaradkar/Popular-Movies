@@ -8,4 +8,5 @@
 
     <string name="menu_view_pop">Most Popular</string>
     <string name="menu_view_rated">Highest Rated</string>
+    <string name="menu_view_fav">Favourites</string>
 </resources>

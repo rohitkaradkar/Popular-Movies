@@ -96,6 +96,9 @@ public class MainFragment extends Fragment {
 
         return super.onOptionsItemSelected(item);
     }
+    private void displayFavourites(){
+
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

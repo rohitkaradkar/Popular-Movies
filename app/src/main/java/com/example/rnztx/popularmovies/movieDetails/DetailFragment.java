@@ -92,7 +92,18 @@ public class DetailFragment extends Fragment {
         if (mMovieInfo != null){
 
             if (isSaved){ // delete from database
-
+                long movieId = Long.valueOf(mMovieInfo.getMovie_id());
+                int rowsDeleted = getContext().getContentResolver().delete(
+                        MovieContract.MovieEntry.buildMovieWithIdUri(movieId),
+                        MovieContract.MovieEntry._ID + " = ?",
+                        new String[]{mMovieInfo.getMovie_id()}
+                );
+                if (rowsDeleted > 0){
+                    Log.e(LOG_TAG,"Movie Deleted");
+                    updateIcon();
+                    isSaved = false;
+                }else
+                    Log.e(LOG_TAG,"Failed to delete" +rowsDeleted);
             }
             else { // save to databse
                 ContentValues values = new ContentValues();
@@ -107,7 +118,7 @@ public class DetailFragment extends Fragment {
                 long rowId = ContentUris.parseId(movieUri);
 
                 if (rowId>0){
-                    Log.e(LOG_TAG,"Saved: "+mMovieInfo.getMovie_id());
+//                    Log.e(LOG_TAG,"Saved: "+mMovieInfo.getMovie_id());
                     isSaved = true;
                 }
             }
@@ -128,12 +139,12 @@ public class DetailFragment extends Fragment {
                 if (cursor.moveToFirst()){
                     if (movieId == Long.valueOf(cursor.getString(0))){
                         isSaved = true;
-                        Log.e(LOG_TAG,"Saved to favourite");
+//                        Log.e(LOG_TAG,"Saved to favourite");
                     }
                 }
                 else {
                     isSaved = false;
-                    Log.e(LOG_TAG,"not saved");
+//                    Log.e(LOG_TAG,"not saved");
                 }
             }catch (Exception e){
                 Log.e(LOG_TAG,e.toString());
