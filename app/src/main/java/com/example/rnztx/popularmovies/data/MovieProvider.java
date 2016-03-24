@@ -156,8 +156,12 @@ public class MovieProvider extends ContentProvider {
                     cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                     break;
                 }
+                case Constants.UriMatchCodes.MOVIES:{
+                    cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,null,null,null,null,null,null);
+                    break;
+                }
                 default:
-                    throw new UnsupportedOperationException("Unknown uri "+uri);
+                    throw new UnsupportedOperationException("Query: Unknown uri "+uri);
             }
         }catch (Exception e){
             Log.e(LOG_TAG,e.toString());

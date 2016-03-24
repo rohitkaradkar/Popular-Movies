@@ -2,6 +2,7 @@ package com.example.rnztx.popularmovies;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,10 +19,12 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.example.rnztx.popularmovies.data.MovieContract;
 import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
 import com.example.rnztx.popularmovies.handlers.HttpHandler;
 import com.example.rnztx.popularmovies.handlers.JsonHandler;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
+import com.example.rnztx.popularmovies.modules.Constants.*;
 import com.example.rnztx.popularmovies.movieDetails.DetailActivity;
 
 import java.util.ArrayList;
@@ -47,7 +50,7 @@ public class MainFragment extends Fragment {
     //Movie Sort Keys
     final static String SORTBY_POP = "popularity.desc";
     final static String SORTBY_RATING = "vote_count.desc";// vote_average / vote_count
-
+    final static String SORTBY_FAV = "favourites";
     private static String current_sort ;
     public MainFragment() {
         // Required empty public constructor
@@ -93,11 +96,47 @@ public class MainFragment extends Fragment {
             new MovieTask().execute(SORTBY_RATING);
             Toast.makeText(getActivity(),"Updating View",Toast.LENGTH_SHORT).show();
         }
+        else if (menu == R.id.menu_view_fav){
+            displayFavourites();
+        }
 
         return super.onOptionsItemSelected(item);
     }
-    private void displayFavourites(){
 
+    public void displayFavourites(){
+
+        Cursor cursor = null;
+        ArrayList<MovieInfo> favouriteList = new ArrayList<>();
+        try {
+            cursor = getContext().getContentResolver().query(
+                    MovieContract.MovieEntry.buildAllMoviesUri(),
+                    null,null,null,null);
+
+            cursor.moveToFirst();
+            do{
+                MovieInfo favouriteMovie = new MovieInfo(
+                        cursor.getString(ColIndices.MOV_TITLE),
+                        cursor.getString(ColIndices.MOV_POSTER_PATH),
+                        cursor.getString(ColIndices.MOV_OVERVIEW),
+                        cursor.getString(ColIndices.MOV_VOTE),
+                        cursor.getString(ColIndices.MOV_RELEASE_DATE),
+                        cursor.getString(ColIndices.MOV_ID)
+                );
+//                Log.e(LOG_TAG,favouriteMovie.toString());
+                favouriteList.add(favouriteMovie);
+                if (favouriteList.size() > 0){
+                    mAdapterMovieInfo.clear();
+                    mAdapterMovieInfo.addAll(favouriteList);
+                    current_sort = SORTBY_FAV;
+                }
+            }while (cursor.moveToNext());
+        }catch (Exception e){
+            Toast.makeText(getActivity(),"No Favourite List",Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            if (cursor!=null)
+                cursor.close();
+        }
     }
 
     @Override

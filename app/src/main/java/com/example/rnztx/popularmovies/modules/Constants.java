@@ -14,4 +14,12 @@ public final class Constants {
         // fetch movie review
         public static final int MOVIE_REVIEW = 22;
     }
+    public static final class ColIndices{
+        public static final int MOV_ID = 0;
+        public static final int MOV_TITLE = 1;
+        public static final int MOV_RELEASE_DATE = 2;
+        public static final int MOV_POSTER_PATH = 3;
+        public static final int MOV_VOTE = 4;
+        public static final int MOV_OVERVIEW = 5;
+    }
 }
