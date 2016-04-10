@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <LinearLayout
-        android:id="@+id/fragmentDetail_container"
+        android:id="@+id/MovieDetail_container"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
