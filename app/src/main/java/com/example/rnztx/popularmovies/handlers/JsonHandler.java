@@ -25,7 +25,27 @@ public class JsonHandler {
 
     public JsonHandler(){
         // this is dummy Data of single movie
-        this.rawJsonData = "{\"page\":1,\"results\":[{\"poster_path\":\"\\/inVq3FRqcYIRl2la8iZikYYxFNR.jpg\",\"adult\":false,\"overview\":\"Based upon Marvel Comics’ most unconventional anti-hero, DEADPOOL tells the origin story of former Special Forces operative turned mercenary Wade Wilson, who after being subjected to a rogue experiment that leaves him with accelerated healing powers, adopts the alter ego Deadpool. Armed with his new abilities and a dark, twisted sense of humor, Deadpool hunts down the man who nearly destroyed his life.\",\"release_date\":\"2016-02-09\",\"genre_ids\":[35,12,28,878],\"id\":293660,\"original_title\":\"Deadpool\",\"original_language\":\"en\",\"title\":\"Deadpool\",\"backdrop_path\":\"\\/nbIrDhOtUpdD9HKDBRy02a8VhpV.jpg\",\"popularity\":57.267788,\"vote_count\":274,\"video\":false,\"vote_average\":6.16}],\"total_results\":255141,\"total_pages\":12758}";
+        this.rawJsonData = "{\n" +
+                "\"poster_path\": \"/6bCplVkhowCjTHXWv49UjRPn0eK.jpg\",\n" +
+                "\"adult\": false,\n" +
+                "\"overview\": \"Fearing the actions of a god-like Super Hero left unchecked, Gotham City’s own formidable, forceful vigilante takes on Metropolis’s most revered, modern-day savior, while the world wrestles with what sort of hero it really needs. And with Batman and Superman at war with one another, a new threat quickly arises, putting mankind in greater danger than it’s ever known before.\",\n" +
+                "\"release_date\": \"2016-03-23\",\n" +
+                "\"genre_ids\": [\n" +
+                "28,\n" +
+                "12,\n" +
+                "14,\n" +
+                "878\n" +
+                "],\n" +
+                "\"id\": 209112,\n" +
+                "\"original_title\": \"Batman v Superman: Dawn of Justice\",\n" +
+                "\"original_language\": \"en\",\n" +
+                "\"title\": \"Batman v Superman: Dawn of Justice\",\n" +
+                "\"backdrop_path\": \"/cejHDyHEJSjtpsPgGzm1GNsZLMF.jpg\",\n" +
+                "\"popularity\": 90.344458,\n" +
+                "\"vote_count\": 709,\n" +
+                "\"video\": false,\n" +
+                "\"vote_average\": 5.94\n" +
+                "}";
     }
 
     public JsonHandler(String data){
