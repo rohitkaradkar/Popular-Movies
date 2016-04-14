@@ -4,7 +4,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="menu_view_pop">Most Popular</string>
-    <string name="menu_view_rated">Highest Rated</string>
+    <string name="menu_view_pop">Popular</string>
+    <string name="menu_view_rated">Top Rated</string>
     <string name="menu_view_fav">Favourites</string>
+
+    <string name="key_movie_sort_choice">myChoice</string>
+
+    <string name="value_movie_sort_popular">popular</string>
+    <string name="value_movie_sort_topRated">top_rated</string>
+    <string name="value_movie_sort_favorite">favourite</string>
 </resources>

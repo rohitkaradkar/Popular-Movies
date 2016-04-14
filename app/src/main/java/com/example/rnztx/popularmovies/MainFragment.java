@@ -24,6 +24,7 @@ import com.example.rnztx.popularmovies.handlers.JsonHandler;
 import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
 import com.example.rnztx.popularmovies.modules.Constants.ColIndices;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
+import com.example.rnztx.popularmovies.modules.Utilities;
 
 import java.util.ArrayList;
 
@@ -38,18 +39,12 @@ public class MainFragment extends Fragment {
     // Constants for URI builder
     final static String URL_SCHEME = "http";
     final static String BASE_URL_API = "api.themoviedb.org";
-    final static String BASE_PATH_DISCOVER1 = "3";
-    final static String BASE_PATH_DISCOVER2 = "discover";
-    final static String BASE_PATH_DISCOVER3 = "movie";
-    final static String KEY_SORT = "sort_by";
+    final static String BASE_API_VERSION = "3";
+    final static String BASE_PATH = "movie";
     final static String KEY_API = "api_key";
     // Instance Extras
     final static String STATE_ADAPTER_CONTENT = "adapter";
-    //Movie Sort Keys
-    final static String SORTBY_POP = "popularity.desc";
-    final static String SORTBY_RATING = "vote_count.desc";// vote_average / vote_count
-    final static String SORTBY_FAV = "favourites";
-    private static String current_sort ;
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -58,51 +53,17 @@ public class MainFragment extends Fragment {
     public interface Callback{
         void onItemSelected(MovieInfo selectedMovie);
     }
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //declare that fragment have menu options
-        setHasOptionsMenu(true);
 
-        // No parameter constructor returns dummy data
-        ArrayList<MovieInfo> dummyData = new JsonHandler().parseData();
-        mAdapterMovieInfo = new AdapterMovieInfo(getActivity(),dummyData);
+    private void populateGridView(){
+        // get preference
+        String choice = Utilities.getMovieSortChoice(getActivity());
 
-        if(savedInstanceState == null){
-             //Fetch Data & update adapter
-             new MovieTask().execute(SORTBY_RATING);
-        }
-        else {
-             mAdapterMovieInfo.clear();
-             ArrayList<MovieInfo> arrayList = savedInstanceState.getParcelableArrayList(STATE_ADAPTER_CONTENT);
-             mAdapterMovieInfo.addAll(arrayList);
-        }
-    }
-
-    // Add items to menu
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu,menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int menu = item.getItemId();
-
-        if(menu == R.id.menu_view_pop && !current_sort.equals(SORTBY_POP) ){
-            new MovieTask().execute(SORTBY_POP);
-            Toast.makeText(getActivity(),"Updating View",Toast.LENGTH_SHORT).show();
-        }
-        else if(menu == R.id.menu_view_rated && !current_sort.equals(SORTBY_RATING)){
-            new MovieTask().execute(SORTBY_RATING);
-            Toast.makeText(getActivity(),"Updating View",Toast.LENGTH_SHORT).show();
-        }
-        else if (menu == R.id.menu_view_fav){
+        if (choice.equals(getString(R.string.value_movie_sort_favorite))){
             displayFavourites();
+        }else {
+            new MovieTask().execute(choice);
         }
 
-        return super.onOptionsItemSelected(item);
     }
 
     public void displayFavourites(){
@@ -124,12 +85,10 @@ public class MainFragment extends Fragment {
                         cursor.getString(ColIndices.MOV_RELEASE_DATE),
                         cursor.getString(ColIndices.MOV_ID)
                 );
-//                Log.e(LOG_TAG,favouriteMovie.toString());
                 favouriteList.add(favouriteMovie);
                 if (favouriteList.size() > 0){
                     mAdapterMovieInfo.clear();
                     mAdapterMovieInfo.addAll(favouriteList);
-                    current_sort = SORTBY_FAV;
                 }
             }while (cursor.moveToNext());
         }catch (Exception e){
@@ -139,6 +98,79 @@ public class MainFragment extends Fragment {
             if (cursor!=null)
                 cursor.close();
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menu = item.getItemId();
+        String choice = null;
+        // set choice as per Menu Selection
+        if(menu == R.id.menu_view_pop){
+            choice = getString(R.string.value_movie_sort_popular);
+        }
+        else if(menu == R.id.menu_view_rated){
+            choice = getString(R.string.value_movie_sort_topRated);
+        }
+        else if (menu == R.id.menu_view_fav){
+            choice = getString(R.string.value_movie_sort_favorite);
+        }
+        // display as checked
+        item.setChecked(true);
+        // store choice
+        Utilities.storeMovieSortChoice(getActivity(),choice);
+        // populate Grid as per choice
+        populateGridView();
+        // notify user
+        Toast.makeText(getActivity(),"Displaying "+item.getTitle(),Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //declare that fragment have menu options
+        setHasOptionsMenu(true);
+
+        // No parameter constructor returns dummy data
+        ArrayList<MovieInfo> dummyData = new JsonHandler().parseData();
+        mAdapterMovieInfo = new AdapterMovieInfo(getActivity(),dummyData);
+
+        if(savedInstanceState == null){
+             //Fetch Data & update adapter
+             populateGridView();
+        }
+        else {
+             mAdapterMovieInfo.clear();
+             ArrayList<MovieInfo> arrayList = savedInstanceState.getParcelableArrayList(STATE_ADAPTER_CONTENT);
+             mAdapterMovieInfo.addAll(arrayList);
+        }
+    }
+
+    // Add items to menu
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        /** get stored preference & set it as checked on start
+         *
+         * 0 popular
+         * 1 top rated
+         * 2 favorite
+         */
+        inflater.inflate(R.menu.menu,menu);
+
+        String choice = Utilities.getMovieSortChoice(getActivity());
+        int index = 0;
+        if (choice.equals(getString(R.string.value_movie_sort_popular))) {
+            index = 0;
+        }
+        else if (choice.equals(getString(R.string.value_movie_sort_topRated))) {
+            index = 1;
+        }
+        else if (choice.equals(getString(R.string.value_movie_sort_favorite))) {
+            index = 2;
+        }
+
+        menu.getItem(index).setChecked(true);
     }
 
     @Override
@@ -184,22 +216,21 @@ public class MainFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-            final String VAL_SORT =params[0];
+            final String SORT_VALUE =params[0];
             final String VAL_API_KEY = BuildConfig.TMDB_API_KEY;
 
             Uri.Builder movieUriBuilder = new Uri.Builder();
             movieUriBuilder.scheme(URL_SCHEME)
                     .authority(BASE_URL_API)
-                    .appendPath(BASE_PATH_DISCOVER1)
-                    .appendPath(BASE_PATH_DISCOVER2)
-                    .appendPath(BASE_PATH_DISCOVER3)
-                    .appendQueryParameter(KEY_SORT,VAL_SORT)
+                    .appendPath(BASE_API_VERSION)
+                    .appendPath(BASE_PATH)
+                    .appendPath(SORT_VALUE)
                     .appendQueryParameter(KEY_API,VAL_API_KEY);
 
             HttpHandler movieDbHandler = new HttpHandler(movieUriBuilder.build().toString());
 
             String jsonData = movieDbHandler.fetchData();
-            current_sort = VAL_SORT;
+            Utilities.storeMovieSortChoice(getActivity(),SORT_VALUE);
             return jsonData;
         }
 
