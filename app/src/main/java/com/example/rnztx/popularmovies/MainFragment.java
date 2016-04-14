@@ -1,7 +1,6 @@
 package com.example.rnztx.popularmovies;
 
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -20,12 +19,11 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.example.rnztx.popularmovies.data.MovieContract;
-import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
 import com.example.rnztx.popularmovies.handlers.HttpHandler;
 import com.example.rnztx.popularmovies.handlers.JsonHandler;
+import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
+import com.example.rnztx.popularmovies.modules.Constants.ColIndices;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
-import com.example.rnztx.popularmovies.modules.Constants.*;
-import com.example.rnztx.popularmovies.movieDetails.DetailActivity;
 
 import java.util.ArrayList;
 
@@ -56,6 +54,10 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
+    // Click Listener Event
+    public interface Callback{
+        void onItemSelected(MovieInfo selectedMovie);
+    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,13 +169,10 @@ public class MainFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // get MovieInfo object for selected movie
                 MovieInfo selectedMovie = mAdapterMovieInfo.getItem(position);
-
-                // add Object to intent
-                String INTENT_EXTRA_KEY = getString(R.string.intentExtra_MovieInfo_Key);
-                Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(INTENT_EXTRA_KEY,selectedMovie);
-
-                startActivity(intent);
+                /**
+                 * Now we Notify MainActivity to handle Click Event
+                 */
+                ((Callback)getActivity()).onItemSelected(selectedMovie);
             }
         });
 

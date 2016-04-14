@@ -14,14 +14,13 @@
         tools:context="com.example.rnztx.popularmovies.MainFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"/>
+        android:layout_weight="5"/>
 
     <!--reuse existing detail layout-->
-    <include
-        layout="@layout/fragment_detail"
+    <FrameLayout
+        android:id="@+id/MovieDetail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="6"
-        />
+        android:layout_weight="5"/>
 
 </LinearLayout>

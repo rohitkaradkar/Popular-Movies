@@ -4,6 +4,8 @@ package com.example.rnztx.popularmovies.modules;
  * Created by rnztx on 18/3/16.
  */
 public final class Constants {
+    public static final String ARG_MOVIE_DETAIL = "movie_detail";
+
     public static final class UriMatchCodes{
         // single movie insert
         public static final int MOVIE = 19;

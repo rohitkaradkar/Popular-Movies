@@ -3,6 +3,7 @@ package com.example.rnztx.popularmovies.movieDetails;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.rnztx.popularmovies.R;
 import com.example.rnztx.popularmovies.data.MovieContract;
+import com.example.rnztx.popularmovies.modules.Constants;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
 import com.squareup.picasso.Picasso;
 
@@ -43,10 +45,15 @@ public class DetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //retrieve object from intent
-        String INTENT_EXTRA_KEY = getString(R.string.intentExtra_MovieInfo_Key);
-        Bundle intentBundle = getActivity().getIntent().getExtras();
-        mMovieInfo = (MovieInfo)intentBundle.getParcelable(INTENT_EXTRA_KEY);
+        //retrieve object in Two Pane
+        Bundle arguments = getArguments();
+        if (arguments==null) {
+            // retrieve object in single pane
+            Intent intent = getActivity().getIntent();
+            arguments = intent.getExtras();
+        }
+        mMovieInfo = arguments.getParcelable(Constants.ARG_MOVIE_DETAIL);
+
         checkFavourite();
     }
 
@@ -87,6 +94,7 @@ public class DetailFragment extends Fragment {
         else
             btnFavourite.setImageResource(R.drawable.ic_favorite_holo);
     }
+
     @OnClick(R.id.btnFavourite)
     public void markAsFavourite(){
         if (mMovieInfo != null){
@@ -118,7 +126,6 @@ public class DetailFragment extends Fragment {
                 long rowId = ContentUris.parseId(movieUri);
 
                 if (rowId>0){
-//                    Log.e(LOG_TAG,"Saved: "+mMovieInfo.getMovie_id());
                     isSaved = true;
                 }
             }
@@ -135,16 +142,13 @@ public class DetailFragment extends Fragment {
                         MovieContract.MovieEntry.buildMovieWithIdUri(movieId),
                         null,
                         MovieContract.MovieEntry._ID+" = "+movieId,null,null);
-
                 if (cursor.moveToFirst()){
                     if (movieId == Long.valueOf(cursor.getString(0))){
                         isSaved = true;
-//                        Log.e(LOG_TAG,"Saved to favourite");
                     }
                 }
                 else {
                     isSaved = false;
-//                    Log.e(LOG_TAG,"not saved");
                 }
             }catch (Exception e){
                 Log.e(LOG_TAG,e.toString());
