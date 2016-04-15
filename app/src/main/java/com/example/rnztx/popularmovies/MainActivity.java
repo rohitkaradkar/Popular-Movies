@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.rnztx.popularmovies.modules.Constants;
+import com.example.rnztx.popularmovies.modules.utils.Constants;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
 import com.example.rnztx.popularmovies.movieDetails.DetailActivity;
 import com.example.rnztx.popularmovies.movieDetails.DetailFragment;

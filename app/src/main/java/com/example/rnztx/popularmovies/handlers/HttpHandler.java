@@ -3,11 +3,16 @@ package com.example.rnztx.popularmovies.handlers;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by rnztx on 11/2/16.
@@ -80,5 +85,16 @@ public class HttpHandler {
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG,e.toString());
         }
+    }
+
+    public String execute() throws IOException{
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(this.connectionUrl)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
     }
 }

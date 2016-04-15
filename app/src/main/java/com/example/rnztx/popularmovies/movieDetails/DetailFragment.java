@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.example.rnztx.popularmovies.R;
 import com.example.rnztx.popularmovies.data.MovieContract;
-import com.example.rnztx.popularmovies.modules.Constants;
+import com.example.rnztx.popularmovies.modules.utils.Constants;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
 import com.squareup.picasso.Picasso;
 

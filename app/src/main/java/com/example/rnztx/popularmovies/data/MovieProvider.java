@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.rnztx.popularmovies.modules.Constants;
+import com.example.rnztx.popularmovies.modules.utils.Constants;
 
 /**
  * Created by rnztx on 18/3/16.

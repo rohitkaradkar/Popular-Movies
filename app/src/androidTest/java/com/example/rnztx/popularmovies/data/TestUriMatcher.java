@@ -4,7 +4,7 @@ import android.content.UriMatcher;
 import android.net.Uri;
 import android.test.AndroidTestCase;
 
-import com.example.rnztx.popularmovies.modules.Constants;
+import com.example.rnztx.popularmovies.modules.utils.Constants;
 
 /**
  * Created by rnztx on 18/3/16.

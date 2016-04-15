@@ -22,9 +22,9 @@ import com.example.rnztx.popularmovies.data.MovieContract;
 import com.example.rnztx.popularmovies.handlers.HttpHandler;
 import com.example.rnztx.popularmovies.handlers.JsonHandler;
 import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
-import com.example.rnztx.popularmovies.modules.Constants.ColIndices;
+import com.example.rnztx.popularmovies.modules.utils.Constants.ColIndices;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
-import com.example.rnztx.popularmovies.modules.Utilities;
+import com.example.rnztx.popularmovies.modules.utils.Utilities;
 
 import java.util.ArrayList;
 

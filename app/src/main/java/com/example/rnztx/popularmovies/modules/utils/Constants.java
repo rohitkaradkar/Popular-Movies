@@ -1,4 +1,4 @@
-package com.example.rnztx.popularmovies.modules;
+package com.example.rnztx.popularmovies.modules.utils;
 
 /**
  * Created by rnztx on 18/3/16.
