@@ -34,10 +34,12 @@ public class Utilities {
         SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
         String key = activity.getString(R.string.key_movie_sort_choice);
         String defaultValue = activity.getString(R.string.value_movie_sort_topRated);
-        String choice = sharedPreferences.getString(key,defaultValue);
-        return  choice;
+        return sharedPreferences.getString(key,defaultValue);
     }
 
+    public static String getYoutubeVideoThumbnailUrl(String videoKey){
+        return String.format("http://img.youtube.com/vi/%s/mqdefault.jpg",videoKey);
+    }
     public static String buildUrlForMovieVideos(String movie_id){
 
         Uri.Builder movieUriBuilder = new Uri.Builder();

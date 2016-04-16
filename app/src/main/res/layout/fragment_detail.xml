@@ -82,5 +82,22 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             />
 
+        <!--Reviews-->
+        <TextView
+            android:id="@+id/txt_review_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            />
+        <TextView
+            android:id="@+id/txt_review_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/img_movie_trailer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 </ScrollView>

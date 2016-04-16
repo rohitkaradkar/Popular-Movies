@@ -229,9 +229,14 @@ public class MainFragment extends Fragment {
 
             HttpHandler movieDbHandler = new HttpHandler(movieUriBuilder.build().toString());
 
-            String jsonData = movieDbHandler.fetchData();
-            Utilities.storeMovieSortChoice(getActivity(),SORT_VALUE);
-            return jsonData;
+            try {
+                String jsonData = movieDbHandler.fetchData();
+                Utilities.storeMovieSortChoice(getActivity(),SORT_VALUE);
+                return jsonData;
+            }catch (Exception e){
+                Log.e(LOG_TAG,e.toString());
+            }
+            return null;
         }
 
         @Override

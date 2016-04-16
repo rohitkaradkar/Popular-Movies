@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,8 +20,15 @@ import android.widget.TextView;
 
 import com.example.rnztx.popularmovies.R;
 import com.example.rnztx.popularmovies.data.MovieContract;
-import com.example.rnztx.popularmovies.modules.utils.Constants;
+import com.example.rnztx.popularmovies.handlers.HttpHandler;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
+import com.example.rnztx.popularmovies.modules.tmdb.reviews.ReviewResult;
+import com.example.rnztx.popularmovies.modules.tmdb.reviews.TmdbReviews;
+import com.example.rnztx.popularmovies.modules.tmdb.videos.TmdbVideos;
+import com.example.rnztx.popularmovies.modules.tmdb.videos.VideoResult;
+import com.example.rnztx.popularmovies.modules.utils.Constants;
+import com.example.rnztx.popularmovies.modules.utils.Utilities;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -32,15 +40,17 @@ import butterknife.OnClick;
  */
 public class DetailFragment extends Fragment {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
-    @Bind(R.id.btnFavourite)
-    ImageButton btnFavourite;
-    private MovieInfo mMovieInfo = null;
+    @Bind(R.id.btnFavourite)  ImageButton btnFavourite;
+    @Bind(R.id.txt_review_author) TextView txtReviewAuthor;
+    @Bind(R.id.txt_review_content) TextView txtReviewContent;
+    @Bind(R.id.img_movie_trailer) ImageView imgMovieVideoThumbnail;
+
+    private MovieInfo mMovieInfo ;
     private static boolean isSaved = false;
+    private MovieDataTask mFetchMovieDataTask;
 
     final static String IMAGE_BASE = "http://image.tmdb.org/t/p/w185/";
-    public DetailFragment() {
-        // Required empty public constructor
-    }
+    public DetailFragment() {}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,8 +62,11 @@ public class DetailFragment extends Fragment {
             Intent intent = getActivity().getIntent();
             arguments = intent.getExtras();
         }
-        mMovieInfo = arguments.getParcelable(Constants.ARG_MOVIE_DETAIL);
 
+        mMovieInfo = arguments.getParcelable(Constants.ARG_MOVIE_DETAIL);
+        // download movie reviews and Videos info
+        mFetchMovieDataTask = new MovieDataTask(mMovieInfo.getMovie_id());
+        mFetchMovieDataTask.execute();
         checkFavourite();
     }
 
@@ -84,8 +97,21 @@ public class DetailFragment extends Fragment {
         // set avg rating
         TextView txtMovieRatings= (TextView)rootView.findViewById(R.id.txt_movie_rating);
         txtMovieRatings.setText(mMovieInfo.getVote_avg());
-
         return rootView;
+    }
+
+    public void showReviews(TmdbReviews tmdbReviews){
+        for (ReviewResult result: tmdbReviews.getResults()){
+            txtReviewAuthor.setText(result.getAuthor());
+            txtReviewContent.setText(result.getContent());
+        }
+    }
+    public void showMovieVideos(TmdbVideos tmdbVideos){
+        for (VideoResult result: tmdbVideos.getResults()){
+            String youtubeKey = result.getKey();
+            String videoThumbnailUrl = Utilities.getYoutubeVideoThumbnailUrl(youtubeKey);
+            Picasso.with(getContext()).load(videoThumbnailUrl).into(imgMovieVideoThumbnail);
+        }
     }
     private void updateIcon(){
         if (isSaved){
@@ -160,4 +186,58 @@ public class DetailFragment extends Fragment {
     }
 
 
+    /**
+     * Created by rnztx on 16/4/16.
+     */
+    private class MovieDataTask extends AsyncTask<Void,Void,Boolean> {
+        private final String LOG_TAG = MovieDataTask.class.getSimpleName();
+        private String movie_id;
+        private String urlMovieVideos;
+        private String urlMovieReviews;
+        private TmdbReviews movieReviews;
+        private TmdbVideos movieVideos;
+
+        public MovieDataTask(String id){
+            this.movie_id = id;
+            this.urlMovieReviews = Utilities.buildUrlForMovieReviews(movie_id);
+            this.urlMovieVideos = Utilities.buildUrlForMovieVideos(movie_id);
+        }
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            HttpHandler httpHandler = new HttpHandler();
+            try {
+                String jsonMoviesReviewData = httpHandler.execute(this.urlMovieReviews);
+                String jsonMovieVideosData = httpHandler.execute(this.urlMovieVideos);
+                movieReviews = new Gson().fromJson(jsonMoviesReviewData,TmdbReviews.class);
+                movieVideos = new Gson().fromJson(jsonMovieVideosData,TmdbVideos.class);
+                return true;
+            }catch (Exception e){
+                Log.e(LOG_TAG,e.toString());
+            }
+            return false;
+        }
+
+        public TmdbReviews getMovieReviews() {
+            if (movieReviews.getId()!=null)
+                return movieReviews;
+            else
+                throw new NullPointerException("Failed to get movie Reviews");
+        }
+
+        public TmdbVideos getMovieVideos() {
+            if (movieVideos.getId()!=null)
+                return movieVideos;
+            else
+                throw new NullPointerException("Failed to get movie Videos");
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean){
+                showReviews(movieReviews);
+                showMovieVideos(movieVideos);
+            }
+        }
+    }
 }
