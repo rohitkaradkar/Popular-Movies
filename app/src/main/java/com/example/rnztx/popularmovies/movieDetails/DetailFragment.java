@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,12 +16,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rnztx.popularmovies.R;
 import com.example.rnztx.popularmovies.data.MovieContract;
@@ -64,8 +69,35 @@ public class DetailFragment extends Fragment {
     public DetailFragment() {}
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.detail_view_menu,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int menu = item.getItemId();
+        if (menu == R.id.menu_action_share){
+            try {
+                // now get first trailer
+                String videoKey = mTrailerKeys.values().toArray()[0].toString();
+                String youtubeUrl = "http://www.youtube.com/watch?v="+videoKey;
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT,youtubeUrl);
+                intent.setType("text/plain");
+                startActivity(intent);
+            }catch (ArrayIndexOutOfBoundsException e){
+                Toast.makeText(getContext(),"NOT AVAILABLE",Toast.LENGTH_SHORT).show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         //retrieve object in Two Pane
         Bundle arguments = getArguments();
         if (arguments==null) {
@@ -94,8 +126,15 @@ public class DetailFragment extends Fragment {
         txtMovieTitle.setText(mMovieInfo.getTitle());
 
         // set Poster Image
+        // check if image is stored on sd! offline mode...
+
+        File imagePath = Utilities.getAbsoluteImageStoragePath(mMovieInfo.getPoster_path());
         String imgUrl = IMAGE_BASE+ mMovieInfo.getPoster_path();
-        Picasso.with(getContext()).load(imgUrl).into(imgMoviePoster);
+        if (imagePath.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imagePath.getPath());
+            imgMoviePoster.setImageBitmap(bitmap);
+        }else
+            Picasso.with(getContext()).load(imgUrl).into(imgMoviePoster);
 
         // set movie Summary
         TextView txtMovieSummary= (TextView)rootView.findViewById(R.id.txt_movie_summary);
