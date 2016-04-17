@@ -1,6 +1,7 @@
 package com.example.rnztx.popularmovies.movieDetails;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.rnztx.popularmovies.R;
@@ -35,6 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,12 +51,14 @@ public class DetailFragment extends Fragment {
     @Bind(R.id.btnFavourite)  ImageButton btnFavourite;
     @Bind(R.id.txt_review_author) TextView txtReviewAuthor;
     @Bind(R.id.txt_review_content) TextView txtReviewContent;
-    @Bind(R.id.img_movie_trailer) ImageView imgMovieVideoThumbnail;
     @Bind(R.id.img_detailActivity_poster) ImageView imgMoviePoster;
+    @Bind(R.id.container_movie_trailer) LinearLayout containerMovieTrailer;
 
     private MovieInfo mMovieInfo ;
     private static boolean isSaved = false;
     private MovieDataTask mFetchMovieDataTask;
+    private View.OnClickListener mTrailerClickListener;
+    private HashMap<ImageView,String> mTrailerKeys = new HashMap<>();
 
     final static String IMAGE_BASE = "http://image.tmdb.org/t/p/w185/";
     public DetailFragment() {}
@@ -103,6 +108,26 @@ public class DetailFragment extends Fragment {
         // set avg rating
         TextView txtMovieRatings= (TextView)rootView.findViewById(R.id.txt_movie_rating);
         txtMovieRatings.setText(mMovieInfo.getVote_avg());
+
+        mTrailerClickListener = new View.OnClickListener() {
+            /**
+             * Youtube url play is referred from
+             * http://stackoverflow.com/a/12439378/2804351
+             */
+            @Override
+            public void onClick(View v) {
+                String youtubeKey = mTrailerKeys.get(v);
+                Intent intentYoutubeTrailer;
+                try {
+                    intentYoutubeTrailer = new Intent(Intent.ACTION_VIEW,Uri.parse("vnd.youtube:"+youtubeKey));
+                    startActivity(intentYoutubeTrailer);
+                }catch (ActivityNotFoundException e){
+                    intentYoutubeTrailer = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://www.youtube.com/watch?v="+youtubeKey));
+                    startActivity(intentYoutubeTrailer);
+                }
+            }
+        };
         return rootView;
     }
 
@@ -113,12 +138,23 @@ public class DetailFragment extends Fragment {
         }
     }
     public void showMovieVideos(TmdbVideos tmdbVideos){
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0,16,0,16);
+
         for (VideoResult result: tmdbVideos.getResults()){
             String youtubeKey = result.getKey();
             String videoThumbnailUrl = Utilities.getYoutubeVideoThumbnailUrl(youtubeKey);
-            Picasso.with(getContext()).load(videoThumbnailUrl).into(imgMovieVideoThumbnail);
+
+            ImageView imageView = new ImageView(getContext());
+            imageView.setOnClickListener(mTrailerClickListener);
+            imageView.setLayoutParams(layoutParams);
+            Picasso.with(getContext()).load(videoThumbnailUrl).into(imageView);
+            mTrailerKeys.put(imageView,youtubeKey);
+            containerMovieTrailer.addView(imageView);
         }
     }
+
     private void updateIcon(){
         if (isSaved){
             btnFavourite.setImageResource(R.drawable.ic_favorite_full);
