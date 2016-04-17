@@ -5,6 +5,7 @@ package com.example.rnztx.popularmovies.modules.utils;
  */
 public final class Constants {
     public static final String ARG_MOVIE_DETAIL = "movie_detail";
+    public static final String POPULAR_MOVIES_DIR = "PopularMovies";
 
     public static final class UriMatchCodes{
         // single movie insert

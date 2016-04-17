@@ -3,10 +3,13 @@ package com.example.rnztx.popularmovies.modules.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 
 import com.example.rnztx.popularmovies.BuildConfig;
 import com.example.rnztx.popularmovies.R;
+
+import java.io.File;
 
 /**
  * Created by rnztx on 14/4/16.
@@ -21,6 +24,7 @@ public class Utilities {
     final static String BASE_PATH_VIDEOS = "videos";
     final static String KEY_API = "api_key";
     final static String VAL_API_KEY = BuildConfig.TMDB_API_KEY;
+
 
     public static void storeMovieSortChoice(FragmentActivity activity, String choice){
         SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
@@ -64,5 +68,11 @@ public class Utilities {
                 .appendQueryParameter(KEY_API,VAL_API_KEY);
 
         return movieUriBuilder.build().toString();
+    }
+
+    // get Image Storage Path
+    public static File getAbsoluteImageStoragePath(String imageName){
+        File sdCardDir = Environment.getExternalStorageDirectory();
+        return new File(sdCardDir+"/"+Constants.POPULAR_MOVIES_DIR,imageName);
     }
 }

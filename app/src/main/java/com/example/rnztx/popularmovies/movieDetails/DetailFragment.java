@@ -5,6 +5,8 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +33,9 @@ import com.example.rnztx.popularmovies.modules.utils.Utilities;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -44,6 +49,7 @@ public class DetailFragment extends Fragment {
     @Bind(R.id.txt_review_author) TextView txtReviewAuthor;
     @Bind(R.id.txt_review_content) TextView txtReviewContent;
     @Bind(R.id.img_movie_trailer) ImageView imgMovieVideoThumbnail;
+    @Bind(R.id.img_detailActivity_poster) ImageView imgMoviePoster;
 
     private MovieInfo mMovieInfo ;
     private static boolean isSaved = false;
@@ -77,12 +83,12 @@ public class DetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this,rootView);
         updateIcon();
+
         // set title
         TextView txtMovieTitle= (TextView)rootView.findViewById(R.id.txt_movie_title);
         txtMovieTitle.setText(mMovieInfo.getTitle());
 
         // set Poster Image
-        ImageView imgMoviePoster = (ImageView)rootView.findViewById(R.id.img_detailActivity_poster);
         String imgUrl = IMAGE_BASE+ mMovieInfo.getPoster_path();
         Picasso.with(getContext()).load(imgUrl).into(imgMoviePoster);
 
@@ -150,7 +156,7 @@ public class DetailFragment extends Fragment {
 
                 Uri movieUri = getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,values);
                 long rowId = ContentUris.parseId(movieUri);
-
+                storePosterToExternalStorage(mMovieInfo.getPoster_path());
                 if (rowId>0){
                     isSaved = true;
                 }
@@ -159,6 +165,26 @@ public class DetailFragment extends Fragment {
         }
     }
 
+    private void storePosterToExternalStorage(String imageName){
+        // this code snippet is referred from StackOverflow
+        if (imgMoviePoster!=null){
+            // get image from ImageView
+            BitmapDrawable bitmapDrawable = (BitmapDrawable)imgMoviePoster.getDrawable();
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            // get absolute image Path
+            File imageFile = Utilities.getAbsoluteImageStoragePath(imageName);
+            FileOutputStream fileOutputStream;
+            try {
+                fileOutputStream = new FileOutputStream(imageFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,fileOutputStream);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+//                Log.e(LOG_TAG,"Saved to"+imageFile.getPath());
+            }catch (Exception e){
+                Log.e(LOG_TAG,e.toString());
+            }
+        }
+    }
     private void checkFavourite(){
         if (mMovieInfo!=null){
             Cursor cursor = null;

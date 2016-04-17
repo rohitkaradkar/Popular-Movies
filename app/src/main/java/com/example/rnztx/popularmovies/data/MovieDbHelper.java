@@ -3,7 +3,12 @@ package com.example.rnztx.popularmovies.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.rnztx.popularmovies.data.MovieContract.*;
+import android.os.Environment;
+
+import com.example.rnztx.popularmovies.data.MovieContract.MovieEntry;
+import com.example.rnztx.popularmovies.modules.utils.Constants;
+
+import java.io.File;
 
 /**
  * Created by rnztx on 15/3/16.
@@ -26,6 +31,11 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_OVERVIEW+" TEXT NOT NULL);";//5
 
         db.execSQL(SQL_CREATE_FAVOURITE_MOVIE_TABLE);
+
+        // create Dir for Image Storage
+        File imageStorageDir = new File(Environment.getExternalStorageDirectory()+"/"+ Constants.POPULAR_MOVIES_DIR);
+        if (!imageStorageDir.exists())
+            imageStorageDir.mkdir();
     }
 
     @Override
