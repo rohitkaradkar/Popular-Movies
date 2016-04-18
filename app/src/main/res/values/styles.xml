@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="txtView_extras">
+        <item name="android:textSize">@dimen/movDetail_txtSize_extras_heading</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:visibility">invisible</item>
+    </style>
 </resources>

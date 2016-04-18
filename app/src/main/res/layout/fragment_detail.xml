@@ -8,8 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_margin="@dimen/activity_horizontal_margin"
         tools:context="com.example.rnztx.popularmovies.movieDetails.DetailFragment">
         <!--Title-->
         <TextView
@@ -17,6 +16,7 @@
             android:layout_height="wrap_content"
             android:text="@string/hello_blank_fragment"
             android:textSize="@dimen/movDetail_txtSize_title"
+            android:textStyle="bold"
             android:id="@+id/txt_movie_title"/>
 
         <!--Poster and info    -->
@@ -80,37 +80,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:textSize="@dimen/movDetail_txtSize_other"
             />
 
-        <!--Movie TRailer-->
+        <!--Movie Trailer-->
         <TextView
+            android:id="@+id/txt_movie_trailer_heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Trailers"/>
+            android:text="@string/txt_movie_trailers_heading"
+            style="@style/txtView_extras"
+            />
+
         <LinearLayout
             android:orientation="vertical"
             android:id="@+id/container_movie_trailer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/activity_horizontal_margin">
-            <!--<ImageView-->
-                <!--android:id="@+id/img_movie_trailer"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="@dimen/activity_horizontal_margin"/>-->
         </LinearLayout>
 
         <!--Reviews-->
         <TextView
-            android:id="@+id/txt_review_author"
+            android:id="@+id/txt_movie_review_heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAllCaps="true" />
-
-        <TextView
-            android:id="@+id/txt_review_content"
+            android:text="@string/txt_movie_reviews_heading"
+            style="@style/txtView_extras"
+            />
+        <LinearLayout
+            android:id="@+id/container_movie_review"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
 
 
     </LinearLayout>

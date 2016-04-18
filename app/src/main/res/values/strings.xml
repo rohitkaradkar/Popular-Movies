@@ -3,6 +3,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_movie_reviews_heading">Reviews</string>
+    <string name="txt_movie_trailers_heading">Trailers</string>
 
     <string name="menu_view_pop">Popular</string>
     <string name="menu_view_rated">Top Rated</string>

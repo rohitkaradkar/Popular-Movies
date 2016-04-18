@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,10 +56,11 @@ import butterknife.OnClick;
 public class DetailFragment extends Fragment {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
     @Bind(R.id.btnFavourite)  ImageButton btnFavourite;
-    @Bind(R.id.txt_review_author) TextView txtReviewAuthor;
-    @Bind(R.id.txt_review_content) TextView txtReviewContent;
     @Bind(R.id.img_detailActivity_poster) ImageView imgMoviePoster;
     @Bind(R.id.container_movie_trailer) LinearLayout containerMovieTrailer;
+    @Bind(R.id.container_movie_review) LinearLayout containerMovieReview;
+    @Bind(R.id.txt_movie_review_heading) TextView txtReviewsHeading;
+    @Bind(R.id.txt_movie_trailer_heading) TextView txtTrailersHeading;
 
     private MovieInfo mMovieInfo ;
     private static boolean isSaved = false;
@@ -149,12 +152,12 @@ public class DetailFragment extends Fragment {
         txtMovieRatings.setText(mMovieInfo.getVote_avg());
 
         mTrailerClickListener = new View.OnClickListener() {
-            /**
-             * Youtube url play is referred from
-             * http://stackoverflow.com/a/12439378/2804351
-             */
             @Override
             public void onClick(View v) {
+                /**
+                 * Youtube url play is referred from
+                 * http://stackoverflow.com/a/12439378/2804351
+                 */
                 String youtubeKey = mTrailerKeys.get(v);
                 Intent intentYoutubeTrailer;
                 try {
@@ -170,13 +173,28 @@ public class DetailFragment extends Fragment {
         return rootView;
     }
 
-    public void showReviews(TmdbReviews tmdbReviews){
+    public void displayMovieReviews(TmdbReviews tmdbReviews){
         for (ReviewResult result: tmdbReviews.getResults()){
-            txtReviewAuthor.setText(result.getAuthor());
-            txtReviewContent.setText(result.getContent());
+            TextView txtAuthorName = new TextView(getContext());
+            txtAuthorName.setText(result.getAuthor());
+
+            TextView txtContent = new TextView(getContext());
+            txtContent.setText(result.getContent());
+            // make author bold italic
+            txtAuthorName.setTypeface(null, Typeface.BOLD_ITALIC);
+            txtAuthorName.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.movDetail_txtSize_other)
+            );
+            txtContent.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.movDetail_txtSize_other)
+            );
+            containerMovieReview.addView(txtAuthorName);
+            containerMovieReview.addView(txtContent);
         }
     }
-    public void showMovieVideos(TmdbVideos tmdbVideos){
+    public void displayMovieVideos(TmdbVideos tmdbVideos){
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0,16,0,16);
@@ -318,26 +336,16 @@ public class DetailFragment extends Fragment {
             return false;
         }
 
-        public TmdbReviews getMovieReviews() {
-            if (movieReviews.getId()!=null)
-                return movieReviews;
-            else
-                throw new NullPointerException("Failed to get movie Reviews");
-        }
-
-        public TmdbVideos getMovieVideos() {
-            if (movieVideos.getId()!=null)
-                return movieVideos;
-            else
-                throw new NullPointerException("Failed to get movie Videos");
-        }
-
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean){
-                showReviews(movieReviews);
-                showMovieVideos(movieVideos);
+                displayMovieVideos(movieVideos);
+                displayMovieReviews(movieReviews);
+//                Log.e(LOG_TAG,"No of reviews: "+movieReviews.getResults().size());
+                //enable headings
+                txtTrailersHeading.setVisibility(View.VISIBLE);
+                txtReviewsHeading.setVisibility(View.VISIBLE);
             }
         }
     }
