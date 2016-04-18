@@ -22,8 +22,8 @@ import com.example.rnztx.popularmovies.data.MovieContract;
 import com.example.rnztx.popularmovies.handlers.HttpHandler;
 import com.example.rnztx.popularmovies.handlers.JsonHandler;
 import com.example.rnztx.popularmovies.modules.AdapterMovieInfo;
-import com.example.rnztx.popularmovies.modules.utils.Constants.ColIndices;
 import com.example.rnztx.popularmovies.modules.MovieInfo;
+import com.example.rnztx.popularmovies.modules.utils.Constants.ColIndices;
 import com.example.rnztx.popularmovies.modules.utils.Utilities;
 
 import java.util.ArrayList;
@@ -54,19 +54,19 @@ public class MainFragment extends Fragment {
         void onItemSelected(MovieInfo selectedMovie);
     }
 
-    private void populateGridView(){
+    private boolean isPopulatingGridView(String choice){
         // get preference
-        String choice = Utilities.getMovieSortChoice(getActivity());
 
         if (choice.equals(getString(R.string.value_movie_sort_favorite))){
-            displayFavourites();
+            return isDisplayingFavourites();
         }else {
             new MovieTask().execute(choice);
+            return true;
         }
 
     }
 
-    public void displayFavourites(){
+    public boolean isDisplayingFavourites(){
 
         Cursor cursor = null;
         ArrayList<MovieInfo> favouriteList = new ArrayList<>();
@@ -91,8 +91,10 @@ public class MainFragment extends Fragment {
                     mAdapterMovieInfo.addAll(favouriteList);
                 }
             }while (cursor.moveToNext());
+            return true;
         }catch (Exception e){
             Toast.makeText(getActivity(),"No Favourite List",Toast.LENGTH_SHORT).show();
+            return false;
         }
         finally {
             if (cursor!=null)
@@ -113,14 +115,15 @@ public class MainFragment extends Fragment {
         else if (menu == R.id.menu_view_fav){
             choice = getString(R.string.value_movie_sort_favorite);
         }
-        // display as checked
-        item.setChecked(true);
-        // store choice
-        Utilities.storeMovieSortChoice(getActivity(),choice);
         // populate Grid as per choice
-        populateGridView();
-        // notify user
-        Toast.makeText(getActivity(),"Displaying "+item.getTitle(),Toast.LENGTH_SHORT).show();
+        if(choice!=null && isPopulatingGridView(choice)){
+            // display as checked
+            item.setChecked(true);
+            // store choice
+            Utilities.storeMovieSortChoice(getActivity(),choice);
+            // notify user
+            Toast.makeText(getActivity(),"Displaying "+item.getTitle(),Toast.LENGTH_SHORT).show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -136,7 +139,7 @@ public class MainFragment extends Fragment {
 
         if(savedInstanceState == null){
              //Fetch Data & update adapter
-             populateGridView();
+             isPopulatingGridView(Utilities.getMovieSortChoice(getActivity()));
         }
         else {
              mAdapterMovieInfo.clear();
@@ -233,7 +236,8 @@ public class MainFragment extends Fragment {
                 String jsonData = movieDbHandler.fetchData();
                 Utilities.storeMovieSortChoice(getActivity(),SORT_VALUE);
                 return jsonData;
-            }catch (Exception e){
+            }
+            catch (Exception e){
                 Log.e(LOG_TAG,e.toString());
             }
             return null;

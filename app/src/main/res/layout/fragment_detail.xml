@@ -37,6 +37,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
+                    android:contentDescription="@string/movie_poster_desc"
                     />
             </FrameLayout>
 
@@ -94,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_horizontal_margin">
-            <!--We will add trailers dynamicaly here-->
+            <!--We will add trailers dynamically here-->
         </LinearLayout>
 
         <!--Reviews-->
