@@ -23,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -48,14 +47,12 @@ import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DetailFragment extends Fragment {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
-    @Bind(R.id.btnFavourite)  ImageButton btnFavourite;
     @Bind(R.id.img_detailActivity_poster) ImageView imgMoviePoster;
     @Bind(R.id.container_movie_trailer) LinearLayout containerMovieTrailer;
     @Bind(R.id.container_movie_review) LinearLayout containerMovieReview;
@@ -67,6 +64,7 @@ public class DetailFragment extends Fragment {
     private MovieDataTask mFetchMovieDataTask;
     private View.OnClickListener mTrailerClickListener;
     private HashMap<ImageView,String> mTrailerKeys = new HashMap<>();
+    private MenuItem mMenuItemFavorite;
 
     final static String IMAGE_BASE = "http://image.tmdb.org/t/p/w185/";
     public DetailFragment() {}
@@ -75,6 +73,8 @@ public class DetailFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.detail_view_menu,menu);
+        mMenuItemFavorite = menu.findItem(R.id.menu_action_favorite);
+        checkFavourite();
     }
 
     @Override
@@ -93,7 +93,80 @@ public class DetailFragment extends Fragment {
                 Toast.makeText(getContext(),"NOT AVAILABLE",Toast.LENGTH_SHORT).show();
             }
         }
+        else if(menu == R.id.menu_action_favorite){
+            onActionFavoriteToggled();
+        }
         return super.onOptionsItemSelected(item);
+    }
+    private void updateIcon(){
+        if (isSaved)
+            mMenuItemFavorite.setIcon(R.drawable.ic_favorite_full);
+        else
+            mMenuItemFavorite.setIcon(R.drawable.ic_favorite_holo);
+    }
+
+    public void onActionFavoriteToggled(){
+        if (mMovieInfo != null){
+
+            if (isSaved){ // delete from database
+                long movieId = Long.valueOf(mMovieInfo.getMovie_id());
+                int rowsDeleted = getContext().getContentResolver().delete(
+                        MovieContract.MovieEntry.buildMovieWithIdUri(movieId),
+                        MovieContract.MovieEntry._ID + " = ?",
+                        new String[]{mMovieInfo.getMovie_id()}
+                );
+                if (rowsDeleted > 0){
+                    Log.e(LOG_TAG,"Movie Deleted");
+                    updateIcon();
+                    isSaved = false;
+                }else
+                    Log.e(LOG_TAG,"Failed to delete" +rowsDeleted);
+            }
+            else { // save to databse
+                ContentValues values = new ContentValues();
+                values.put(MovieContract.MovieEntry._ID,mMovieInfo.getMovie_id());
+                values.put(MovieContract.MovieEntry.COLUMN_TITLE,mMovieInfo.getTitle());
+                values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE,mMovieInfo.getRelease_date());
+                values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH,mMovieInfo.getPoster_path());
+                values.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,mMovieInfo.getVote_avg());
+                values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW,mMovieInfo.getPlot());
+
+                Uri movieUri = getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,values);
+                long rowId = ContentUris.parseId(movieUri);
+                storePosterToExternalStorage(mMovieInfo.getPoster_path());
+                if (rowId>0){
+                    isSaved = true;
+                }
+            }
+            updateIcon();
+        }
+    }
+
+    private void checkFavourite(){
+        if (mMovieInfo!=null){
+            Cursor cursor = null;
+            try {
+                long movieId = Long.valueOf(mMovieInfo.getMovie_id());
+                cursor = getContext().getContentResolver().query(
+                        MovieContract.MovieEntry.buildMovieWithIdUri(movieId),
+                        null,
+                        MovieContract.MovieEntry._ID+" = "+movieId,null,null);
+                if (cursor.moveToFirst()){
+                    if (movieId == Long.valueOf(cursor.getString(0))){
+                        isSaved = true;
+                    }
+                }
+                else {
+                    isSaved = false;
+                }
+            }catch (Exception e){
+                Log.e(LOG_TAG,e.toString());
+            }finally {
+                if (cursor!=null)
+                    cursor.close();
+                updateIcon();
+            }
+        }
     }
 
     @Override
@@ -113,7 +186,6 @@ public class DetailFragment extends Fragment {
         // download movie reviews and Videos info
         mFetchMovieDataTask = new MovieDataTask(mMovieInfo.getMovie_id());
         mFetchMovieDataTask.execute();
-        checkFavourite();
     }
 
     @Override
@@ -122,7 +194,6 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this,rootView);
-        updateIcon();
 
         // set title
         TextView txtMovieTitle= (TextView)rootView.findViewById(R.id.txt_movie_title);
@@ -172,7 +243,6 @@ public class DetailFragment extends Fragment {
         };
         return rootView;
     }
-
     public void displayMovieReviews(TmdbReviews tmdbReviews){
         for (ReviewResult result: tmdbReviews.getResults()){
             TextView txtAuthorName = new TextView(getContext());
@@ -194,6 +264,7 @@ public class DetailFragment extends Fragment {
             containerMovieReview.addView(txtContent);
         }
     }
+
     public void displayMovieVideos(TmdbVideos tmdbVideos){
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -209,52 +280,6 @@ public class DetailFragment extends Fragment {
             Picasso.with(getContext()).load(videoThumbnailUrl).into(imageView);
             mTrailerKeys.put(imageView,youtubeKey);
             containerMovieTrailer.addView(imageView);
-        }
-    }
-
-    private void updateIcon(){
-        if (isSaved){
-            btnFavourite.setImageResource(R.drawable.ic_favorite_full);
-        }
-        else
-            btnFavourite.setImageResource(R.drawable.ic_favorite_holo);
-    }
-
-    @OnClick(R.id.btnFavourite)
-    public void markAsFavourite(){
-        if (mMovieInfo != null){
-
-            if (isSaved){ // delete from database
-                long movieId = Long.valueOf(mMovieInfo.getMovie_id());
-                int rowsDeleted = getContext().getContentResolver().delete(
-                        MovieContract.MovieEntry.buildMovieWithIdUri(movieId),
-                        MovieContract.MovieEntry._ID + " = ?",
-                        new String[]{mMovieInfo.getMovie_id()}
-                );
-                if (rowsDeleted > 0){
-                    Log.e(LOG_TAG,"Movie Deleted");
-                    updateIcon();
-                    isSaved = false;
-                }else
-                    Log.e(LOG_TAG,"Failed to delete" +rowsDeleted);
-            }
-            else { // save to databse
-                ContentValues values = new ContentValues();
-                values.put(MovieContract.MovieEntry._ID,mMovieInfo.getMovie_id());
-                values.put(MovieContract.MovieEntry.COLUMN_TITLE,mMovieInfo.getTitle());
-                values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE,mMovieInfo.getRelease_date());
-                values.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH,mMovieInfo.getPoster_path());
-                values.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,mMovieInfo.getVote_avg());
-                values.put(MovieContract.MovieEntry.COLUMN_OVERVIEW,mMovieInfo.getPlot());
-
-                Uri movieUri = getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,values);
-                long rowId = ContentUris.parseId(movieUri);
-                storePosterToExternalStorage(mMovieInfo.getPoster_path());
-                if (rowId>0){
-                    isSaved = true;
-                }
-            }
-            updateIcon();
         }
     }
 
@@ -275,31 +300,6 @@ public class DetailFragment extends Fragment {
 //                Log.e(LOG_TAG,"Saved to"+imageFile.getPath());
             }catch (Exception e){
                 Log.e(LOG_TAG,e.toString());
-            }
-        }
-    }
-    private void checkFavourite(){
-        if (mMovieInfo!=null){
-            Cursor cursor = null;
-            try {
-                long movieId = Long.valueOf(mMovieInfo.getMovie_id());
-                cursor = getContext().getContentResolver().query(
-                        MovieContract.MovieEntry.buildMovieWithIdUri(movieId),
-                        null,
-                        MovieContract.MovieEntry._ID+" = "+movieId,null,null);
-                if (cursor.moveToFirst()){
-                    if (movieId == Long.valueOf(cursor.getString(0))){
-                        isSaved = true;
-                    }
-                }
-                else {
-                    isSaved = false;
-                }
-            }catch (Exception e){
-                Log.e(LOG_TAG,e.toString());
-            }finally {
-                if (cursor!=null)
-                    cursor.close();
             }
         }
     }

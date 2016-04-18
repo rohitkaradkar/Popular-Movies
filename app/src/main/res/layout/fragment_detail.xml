@@ -50,25 +50,21 @@
                     android:id="@+id/txt_movie_releaseDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_action_calendar_day"
-                    android:drawableLeft="@drawable/ic_action_calendar_day"
+                    android:drawableStart="@drawable/ic_calendar"
+                    android:drawableLeft="@drawable/ic_calendar"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:gravity="center"
                     android:textSize="@dimen/movDetail_txtSize_other"/>
 
                 <TextView
                     android:id="@+id/txt_movie_rating"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_action_star_10"
-                    android:drawableLeft="@drawable/ic_action_star_10"
+                    android:drawableStart="@drawable/ic_star"
+                    android:drawableLeft="@drawable/ic_star"
+                    android:gravity="center"
                     android:textSize="@dimen/movDetail_txtSize_other"/>
-            <!--Favourite button-->
-                <ImageButton
-                    android:id="@+id/btnFavourite"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_favorite_holo"
-                    />
+
 
             </LinearLayout>
 
@@ -97,7 +93,8 @@
             android:id="@+id/container_movie_trailer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/activity_horizontal_margin">
+            android:layout_margin="@dimen/activity_horizontal_margin">
+            <!--We will add trailers dynamicaly here-->
         </LinearLayout>
 
         <!--Reviews-->
@@ -112,10 +109,10 @@
             android:id="@+id/container_movie_review"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_horizontal_margin">
+            <!--we will add reviews dynamically here-->
         </LinearLayout>
-
 
     </LinearLayout>
 </ScrollView>

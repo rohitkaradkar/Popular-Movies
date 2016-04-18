@@ -10,6 +10,7 @@
     <string name="menu_view_rated">Top Rated</string>
     <string name="menu_view_fav">Favourites</string>
     <string name="menu_action_share_trailer">Share</string>
+    <string name="menu_action_fav">Favorite</string>
 
     <string name="key_movie_sort_choice">myChoice</string>
 
