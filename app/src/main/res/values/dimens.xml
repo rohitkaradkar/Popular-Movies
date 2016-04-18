@@ -9,6 +9,7 @@
     <dimen name="movDetail_poster_height">230dp</dimen>
     <dimen name="movDetail_txtSize_extras_heading">24sp</dimen>
 
-    <!--gridvie-->
+    <!--gridView-->
     <dimen name="gridView_poster_margin">3dp</dimen>
+    <dimen name="gridView_poster_width">150dp</dimen>
 </resources>

@@ -4,6 +4,7 @@ package com.example.rnztx.popularmovies.movieDetails;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -183,9 +184,6 @@ public class DetailFragment extends Fragment {
         }
 
         mMovieInfo = arguments.getParcelable(Constants.ARG_MOVIE_DETAIL);
-        // download movie reviews and Videos info
-        mFetchMovieDataTask = new MovieDataTask(mMovieInfo.getMovie_id());
-        mFetchMovieDataTask.execute();
     }
 
     @Override
@@ -222,6 +220,10 @@ public class DetailFragment extends Fragment {
         TextView txtMovieRatings= (TextView)rootView.findViewById(R.id.txt_movie_rating);
         txtMovieRatings.setText(mMovieInfo.getVote_avg());
 
+        // download movie reviews and Videos info
+        mFetchMovieDataTask = new MovieDataTask(getContext(),mMovieInfo.getMovie_id());
+        mFetchMovieDataTask.execute();
+
         mTrailerClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,29 +245,29 @@ public class DetailFragment extends Fragment {
         };
         return rootView;
     }
-    public void displayMovieReviews(TmdbReviews tmdbReviews){
+    public void displayMovieReviews(Context context, TmdbReviews tmdbReviews){
         for (ReviewResult result: tmdbReviews.getResults()){
-            TextView txtAuthorName = new TextView(getContext());
+            TextView txtAuthorName = new TextView(context);
             txtAuthorName.setText(result.getAuthor());
 
-            TextView txtContent = new TextView(getContext());
+            TextView txtContent = new TextView(context);
             txtContent.setText(result.getContent());
             // make author bold italic
             txtAuthorName.setTypeface(null, Typeface.BOLD_ITALIC);
             txtAuthorName.setTextSize(
                     TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimension(R.dimen.movDetail_txtSize_other)
+                    context.getResources().getDimension(R.dimen.movDetail_txtSize_other)
             );
             txtContent.setTextSize(
                     TypedValue.COMPLEX_UNIT_PX,
-                    getResources().getDimension(R.dimen.movDetail_txtSize_other)
+                    context.getResources().getDimension(R.dimen.movDetail_txtSize_other)
             );
             containerMovieReview.addView(txtAuthorName);
             containerMovieReview.addView(txtContent);
         }
     }
 
-    public void displayMovieVideos(TmdbVideos tmdbVideos){
+    public void displayMovieVideos(Context context, TmdbVideos tmdbVideos){
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0,16,0,16);
@@ -274,7 +276,7 @@ public class DetailFragment extends Fragment {
             String youtubeKey = result.getKey();
             String videoThumbnailUrl = Utilities.getYoutubeVideoThumbnailUrl(youtubeKey);
 
-            ImageView imageView = new ImageView(getContext());
+            ImageView imageView = new ImageView(context);
             imageView.setOnClickListener(mTrailerClickListener);
             imageView.setLayoutParams(layoutParams);
             Picasso.with(getContext()).load(videoThumbnailUrl).into(imageView);
@@ -315,8 +317,9 @@ public class DetailFragment extends Fragment {
         private String urlMovieReviews;
         private TmdbReviews movieReviews;
         private TmdbVideos movieVideos;
-
-        public MovieDataTask(String id){
+        private Context context;
+        public MovieDataTask(Context context ,String id){
+            this.context = context;
             this.movie_id = id;
             this.urlMovieReviews = Utilities.buildUrlForMovieReviews(movie_id);
             this.urlMovieVideos = Utilities.buildUrlForMovieVideos(movie_id);
@@ -340,10 +343,11 @@ public class DetailFragment extends Fragment {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             if (aBoolean){
-                displayMovieVideos(movieVideos);
-                displayMovieReviews(movieReviews);
+                displayMovieVideos(this.context,movieVideos);
+                displayMovieReviews(this.context,movieReviews);
 //                Log.e(LOG_TAG,"No of reviews: "+movieReviews.getResults().size());
                 //enable headings
+
                 txtTrailersHeading.setVisibility(View.VISIBLE);
                 txtReviewsHeading.setVisibility(View.VISIBLE);
             }

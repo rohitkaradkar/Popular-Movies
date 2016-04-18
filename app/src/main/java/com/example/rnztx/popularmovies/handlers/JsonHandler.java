@@ -1,8 +1,6 @@
 package com.example.rnztx.popularmovies.handlers;
 
 
-import android.util.Log;
-
 import com.example.rnztx.popularmovies.modules.MovieInfo;
 
 import org.json.JSONArray;
@@ -74,7 +72,7 @@ public class JsonHandler {
 //                Log.e(LOG_TAG,information.toString());
             }
         }catch (Exception e){
-            Log.e(LOG_TAG,e.toString());
+//            Log.e(LOG_TAG,e.toString());
         }
         return movieInfoArray;
     }
