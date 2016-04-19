@@ -117,7 +117,7 @@ public class DetailFragment extends Fragment {
                         new String[]{mMovieInfo.getMovie_id()}
                 );
                 if (rowsDeleted > 0){
-                    Log.e(LOG_TAG,"Movie Deleted");
+//                    Log.e(LOG_TAG,"Movie Deleted");
                     updateIcon();
                     isSaved = false;
                 }else
